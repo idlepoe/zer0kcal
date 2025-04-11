@@ -1,0 +1,38 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "zer0kcal",
+          "appId": "1:531040244474:android:caadcd857953c6456b6f43",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "zer0kcal",
+          "configurations": {
+            "android": "1:531040244474:android:caadcd857953c6456b6f43",
+            "ios": "1:531040244474:ios:e6c214c70a4c2fbf6b6f43",
+            "web": "1:531040244474:web:ef93c1e5ddd138446b6f43"
+          }
+        }
+      }
+    }
+  },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  },
+  "storage": {
+    "rules": "storage.rules"
+  }
+}

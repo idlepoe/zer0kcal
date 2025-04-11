@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:zer0kcal/data_provider/ai_provider.dart';
 import 'package:zer0kcal/features/upload/bloc/upload_bloc.dart';
 import 'package:zer0kcal/repositories/feed_repository.dart';
 import 'package:zer0kcal/repositories/feed_repository_impl.dart';
@@ -20,8 +21,9 @@ class AppRouter {
         builder:
             (context, state) => BlocProvider(
               create:
-                  (context) =>
-                      UploadBloc(FeedRepositoryImpl(FirestoreProvider())),
+                  (context) => UploadBloc(
+                    FeedRepositoryImpl(FirestoreProvider(), AiProvider()),
+                  ),
               child: UploadScreen(),
             ),
       ),

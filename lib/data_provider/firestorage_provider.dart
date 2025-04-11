@@ -21,7 +21,7 @@ class FireStorageProvider {
     } catch (e) {
       logger.e(e);
       logger.e(e.toString());
-      return "";
+      return e.toString();
     }
 
     return result;

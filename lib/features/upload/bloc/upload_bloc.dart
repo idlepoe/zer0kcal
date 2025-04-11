@@ -11,6 +11,10 @@ class UploadBloc extends Bloc<UploadEvent, UploadState> {
       emit(UploadLoading());
       String url = await repository.uploadPicture(xFile: event.xFile);
       if (url.isNotEmpty) {
+        String answer = await repository.getFoodAnswer(imageUrl: url);
+        if (answer.isEmpty) {
+          emit(UploadFailure(message: "사진 업로드에 오류가 발생하였습니다."));
+        }
         emit(UploadSuccess());
       } else {
         emit(UploadFailure(message: "사진 업로드에 오류가 발생하였습니다."));

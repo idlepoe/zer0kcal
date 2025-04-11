@@ -18,6 +18,9 @@ dependencies:
   logger: ^2.5.0
   dio: ^5.8.0+1
   adaptive_dialog: ^2.4.1
+  firebase_core: ^3.13.0
+  firebase_auth: ^5.5.2
+  firebase_vertexai: ^1.5.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
