@@ -17,6 +17,7 @@ dependencies:
   intl: ^0.20.2
   logger: ^2.5.0
   dio: ^5.8.0+1
+  adaptive_dialog: ^2.4.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

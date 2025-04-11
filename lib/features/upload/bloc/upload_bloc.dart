@@ -13,7 +13,7 @@ class UploadBloc extends Bloc<UploadEvent, UploadState> {
       if (url.isNotEmpty) {
         emit(UploadSuccess());
       } else {
-        emit(UploadFailure());
+        emit(UploadFailure(message: "사진 업로드에 오류가 발생하였습니다."));
       }
     });
   }

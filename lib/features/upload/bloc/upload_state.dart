@@ -6,4 +6,8 @@ class UploadLoading extends UploadState {}
 
 class UploadSuccess extends UploadState {}
 
-class UploadFailure extends UploadState {}
+class UploadFailure extends UploadState {
+  String message;
+
+  UploadFailure({required this.message});
+}

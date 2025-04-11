@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -10,7 +11,6 @@ import 'package:zer0kcal/features/upload/bloc/upload_event.dart';
 import 'package:zer0kcal/features/upload/bloc/upload_state.dart';
 
 import '../../../core/constants/app_colors.dart';
-import '../bloc/upload_state.dart';
 
 class UploadScreen extends StatelessWidget {
   const UploadScreen({super.key});
@@ -19,7 +19,11 @@ class UploadScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<UploadBloc, UploadState>(
       listener: (BuildContext context, UploadState state) {
-        if (state is UploadInitial) {}
+        if (state is UploadInitial) {
+        } else if (state is UploadSuccess) {
+        } else if (state is UploadFailure) {
+          showOkAlertDialog(context: context);
+        }
       },
       builder: (BuildContext context, state) {
         final isLoading = state is UploadLoading;
