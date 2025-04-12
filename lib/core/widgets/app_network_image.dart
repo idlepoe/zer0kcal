@@ -4,11 +4,17 @@ import 'package:flutter/material.dart';
 
 import '../constants/app_colors.dart';
 
-Widget AppNetworkImage({required String url, double? width, BoxFit? fit}) {
+Widget AppNetworkImage({
+  required String url,
+  double? width,
+  double? height,
+  BoxFit? fit,
+}) {
   return ClipRRect(
     borderRadius: BorderRadius.circular(15),
     child: CachedNetworkImage(
       imageUrl: url,
+      height: height,
       width: width,
       fit: fit,
       progressIndicatorBuilder:
