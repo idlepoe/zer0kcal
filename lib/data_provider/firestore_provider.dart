@@ -22,6 +22,8 @@ class FirestoreProvider {
     try {
       var addResult = await _db.collection('feed').add({
         ...calorieResult.toJson(),
+        "likeCnt": 0,
+        "commentCnt": 0,
         "id": AppUtils.getDateTimeKey(),
         "createdAt": DateTime.now(),
       });

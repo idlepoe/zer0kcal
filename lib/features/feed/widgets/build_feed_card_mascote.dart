@@ -3,22 +3,11 @@ import 'package:flutter/cupertino.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/widgets/app_network_image.dart';
 import '../models/feed.dart';
+import 'feed_image.dart';
 
 Widget buildFeedCardWithMascote(Feed item, int index) {
   Widget imgWidget = Expanded(
-    child: Container(
-      child: Column(
-        children: [
-          Expanded(
-            child: AppNetworkImage(
-              url: item.url,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
-          ),
-        ],
-      ),
-    ),
+    child: Container(child: Column(children: [FeedImage(item: item)])),
   );
   Widget descWidget = Expanded(
     child: Column(
