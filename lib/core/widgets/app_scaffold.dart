@@ -7,26 +7,31 @@ class AppScaffold extends StatelessWidget {
   final String? title;
   final Widget body;
   final Widget? bottomNavigationBar;
+  final Gradient? gradient;
 
   const AppScaffold({
     super.key,
     required this.body,
     this.title,
     this.bottomNavigationBar,
+    this.gradient,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        gradient: RadialGradient(
-          center: const Alignment(0, -0.3),
-          radius: 1.2,
-          colors: [AppColors.brandColor, AppColors.brandSubColor],
-        ),
+        gradient:
+            gradient ??
+            RadialGradient(
+              center: const Alignment(0, -0.3),
+              radius: 1.2,
+              colors: [AppColors.brandColor, AppColors.brandSubColor],
+            ),
       ),
       child: SafeArea(
         child: Scaffold(
+          backgroundColor: Colors.transparent,
           appBar: AppBar(
             backgroundColor: AppColors.brandColor,
             leading:
@@ -50,7 +55,7 @@ class AppScaffold extends StatelessWidget {
                     )
                     : null,
           ),
-          body: body,
+          body: Container(width: double.infinity, child: body),
           bottomNavigationBar: bottomNavigationBar,
         ),
       ),

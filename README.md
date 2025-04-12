@@ -1,1 +1,1 @@
-# zer0kcal
+dart run build_runner build

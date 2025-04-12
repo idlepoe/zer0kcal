@@ -1,5 +1,6 @@
 import 'package:image_picker/image_picker.dart';
 import 'package:zer0kcal/data_provider/firestorage_provider.dart';
+import 'package:zer0kcal/features/result/models/calorie_result.dart';
 
 import '../data_provider/ai_provider.dart';
 import '../data_provider/firestore_provider.dart';
@@ -25,5 +26,10 @@ class FeedRepositoryImpl implements FeedRepository {
   @override
   Future<String> getFoodAnswer({required String imageUrl}) {
     return aiProvider.getFoodAnswer(imageUrl: imageUrl);
+  }
+
+  @override
+  Future<bool> uploadPost({required CalorieResult calorieResult}) {
+    return fireProvider.uploadPost(calorieResult: calorieResult);
   }
 }

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
@@ -5,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 
 import '../logger.dart';
 
@@ -101,6 +103,16 @@ class AppUtils {
       second.toString().padLeft(2, '0'),
     ].join(':');
     return setTime;
+  }
+
+ static Future<XFile> uint8ListToXFile(
+    Uint8List data, {
+    String fileName = "temp.png",
+  }) async {
+    final tempDir = await getTemporaryDirectory();
+    final file = File('${tempDir.path}/$fileName');
+    await file.writeAsBytes(data);
+    return XFile(file.path);
   }
 }
 
