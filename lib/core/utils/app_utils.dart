@@ -75,7 +75,12 @@ class AppUtils {
 
   static Future<ImageSet?> pickerImage({required ImagePicker picker}) async {
     try {
-      XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
+      XFile? pickedFile = await picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 80,
+        maxHeight: 800,
+        maxWidth: 800,
+      );
 
       if (pickedFile != null) {
         if (!AppUtils.isImage(p.extension(pickedFile.name))) {
@@ -89,6 +94,7 @@ class AppUtils {
     } catch (e) {
       logger.e(e);
     }
+    return null;
   }
 
   static String formattedTime2(int time) // --> time in form of seconds
@@ -105,7 +111,7 @@ class AppUtils {
     return setTime;
   }
 
- static Future<XFile> uint8ListToXFile(
+  static Future<XFile> uint8ListToXFile(
     Uint8List data, {
     String fileName = "temp.png",
   }) async {

@@ -1,14 +1,24 @@
-import 'package:zer0kcal/features/result/models/calorie_result.dart';
-
 import '../models/feed.dart';
 
 abstract class FeedState {}
+
+abstract class HasFeedList {
+  List<Feed> get result;
+}
 
 class FeedInitial extends FeedState {}
 
 class FeedLoading extends FeedState {}
 
-class FeedFetchSuccess extends FeedState {
+class FeedUploadRequested extends FeedState implements HasFeedList {
+  @override
+  List<Feed> result;
+
+  FeedUploadRequested({required this.result});
+}
+
+class FeedFetchSuccess extends FeedState implements HasFeedList {
+  @override
   List<Feed> result;
 
   FeedFetchSuccess({required this.result});

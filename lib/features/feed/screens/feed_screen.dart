@@ -5,6 +5,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:screenshot/screenshot.dart';
+import 'package:zer0kcal/core/widgets/app_inkwell.dart';
 import 'package:zer0kcal/features/feed/bloc/feed_bloc.dart';
 
 import '../../../core/constants/app_colors.dart';
@@ -23,29 +24,73 @@ class FeedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<FeedBloc, FeedState>(
-      listener: (context, FeedState state) {
-        if (state is FeedFailure) {
+      listener: (context, FeedState state) async {
+        if (state is FeedUploadRequested) {
+          var result = await context.push("/upload");
+          if (result == true) {
+            context.read<FeedBloc>().add(FeedFetch());
+          }
+        } else if (state is FeedFailure) {
           showOkAlertDialog(context: context, message: state.message);
         }
       },
       builder: (context, FeedState state) {
         List<Feed> list = [];
-        if (state is FeedFetchSuccess || state is FeedFailure) {
+        if (state is FeedFetchSuccess ||
+            state is FeedFailure ||
+            state is FeedUploadRequested) {
           _refreshController.refreshCompleted();
         }
-        if (state is FeedFetchSuccess) {
-          list = state.result;
+        if (state is HasFeedList) {
+          list = (state as HasFeedList).result;
         }
         return AppScaffold(
           title: "공유피드",
+          actions: [
+            AppInkWell(
+              onTap: () async {
+                context.read<FeedBloc>().add(FeedUploadPressed());
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(top: 5),
+                child: Image.asset("assets/ic_upload_feed.png"),
+              ),
+            ),
+          ],
           body:
               list.isNotEmpty
                   ? SmartRefresher(
                     controller: _refreshController,
                     onRefresh: () {
+                      _refreshController.requestRefresh();
                       context.read<FeedBloc>().add(FeedFetch());
                       _refreshController.refreshCompleted();
                     },
+                    header: CustomHeader(
+                      builder: (context, RefreshStatus? mode) {
+                        if (mode == RefreshStatus.idle ||
+                            mode == RefreshStatus.canRefresh) {
+                          // 당기기 전 (기본 대기 상태)
+                          return Image.asset(
+                            'assets/ic_idle_loading.png', // 🍊 당겨주세요 이미지
+                            height: 80,
+                          );
+                        } else if (mode == RefreshStatus.refreshing) {
+                          // 로딩 중
+                          return Image.asset(
+                            'assets/ic_loading.png', // 🍊 로딩 중 이미지
+                            height: 80,
+                          );
+                        } else if (mode == RefreshStatus.completed) {
+                          return Image.asset(
+                            'assets/ic_complete_loading.png', // 🍊 로딩 중 이미지
+                            height: 80,
+                          );
+                        } else {
+                          return SizedBox.shrink(); // 그 외: releaseToRefresh 등
+                        }
+                      },
+                    ),
                     child: Padding(
                       padding: const EdgeInsets.all(20),
                       child: Container(
@@ -63,15 +108,15 @@ class FeedScreen extends StatelessWidget {
                     ),
                   )
                   : NoDataMascote(),
-          bottomNavigationBar: BottomNavigationButton(
-            onTap: () async {
-              var result = await context.push("/upload");
-              if (result == true) {
-                context.read<FeedBloc>().add(FeedFetch());
-              }
-            },
-            buttonText: "업로드",
-          ),
+          // bottomNavigationBar: BottomNavigationButton(
+          //   onTap: () async {
+          //     var result = await context.push("/upload");
+          //     if (result == true) {
+          //       context.read<FeedBloc>().add(FeedFetch());
+          //     }
+          //   },
+          //   buttonText: "업로드",
+          // ),
         );
       },
     );
@@ -98,19 +143,18 @@ class FeedScreen extends StatelessWidget {
         tiles.addAll([
           StaggeredGridTile.count(
             crossAxisCellCount: 1,
-            mainAxisCellCount: 1,
+            mainAxisCellCount: 0.9,
             child: _buildFeedCard(items[i], i),
           ),
           StaggeredGridTile.count(
             crossAxisCellCount: 1,
-            mainAxisCellCount: 1,
+            mainAxisCellCount: 0.9,
             child: _buildFeedCard(items[i + 1], i),
           ),
         ]);
         i += 2;
       }
     }
-
     return tiles;
   }
 

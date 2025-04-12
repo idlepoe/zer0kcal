@@ -9,18 +9,23 @@ import '../models/feed.dart';
 
 class FeedBloc extends Bloc<FeedEvent, FeedState> {
   final FeedRepository repository;
+  List<Feed> _cache = [];
 
   FeedBloc(this.repository) : super(FeedInitial()) {
     on<FeedFetch>((event, emit) async {
       try {
         List<Feed> posts = await repository.fetchFeed();
         logger.d(posts);
+        _cache = posts;
         emit(FeedFetchSuccess(result: posts));
       } catch (e) {
         emit(FeedFailure(message: e.toString()));
       }
     });
     on<FeedPressed>((event, emit) async {});
+    on<FeedUploadPressed>((event, emit) async {
+      emit(FeedUploadRequested(result: _cache));
+    });
     add(FeedFetch());
   }
 }

@@ -8,13 +8,14 @@ class AppScaffold extends StatelessWidget {
   final Widget body;
   final Widget? bottomNavigationBar;
   final Gradient? gradient;
+  final List<Widget>? actions;
 
   const AppScaffold({
     super.key,
     required this.body,
     this.title,
     this.bottomNavigationBar,
-    this.gradient,
+    this.gradient, this.actions,
   });
 
   @override
@@ -58,6 +59,7 @@ class AppScaffold extends StatelessWidget {
                       style: TextStyle(color: AppColors.brandSubColor),
                     )
                     : null,
+            actions: actions,
           ),
           body: Container(width: double.infinity, child: body),
           bottomNavigationBar: bottomNavigationBar,

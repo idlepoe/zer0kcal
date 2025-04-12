@@ -6,8 +6,6 @@ class FeedInitEvent extends FeedEvent {}
 
 class FeedFetch extends FeedEvent {}
 
-class FeedPressed extends FeedEvent {
-  final XFile xFile;
+class FeedUploadPressed extends FeedEvent {}
 
-  FeedPressed(this.xFile);
-}
+class FeedPressed extends FeedEvent {}
