@@ -15,6 +15,7 @@ import 'package:zer0kcal/features/upload/bloc/upload_event.dart';
 import 'package:zer0kcal/features/upload/bloc/upload_state.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/logger.dart';
 
 class UploadScreen extends StatelessWidget {
   const UploadScreen({super.key});
@@ -105,45 +106,47 @@ class UploadScreen extends StatelessWidget {
                 },
               ),
             ),
-            // if (isLoading || isAiLoading)
-            Positioned.fill(
-              child: Scaffold(
-                backgroundColor: Colors.white.withAlpha(175),
-                body: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        "assets/loading_orange.png",
-                        fit: BoxFit.fitWidth,
-                      ),
-                      SizedBox(height: 20),
-                      isLoading
-                          ? Column(
-                            children: [
-                              Text(
-                                loadingMsg[Random().nextInt(loadingMsg.length)],
-                              ),
-                            ],
-                          )
-                          : Column(
-                            children: [
-                              Text(
-                                "${loadingMsg[Random().nextInt(loadingMsg.length)]}(완료)",
-                              ),
-                              Text(
-                                aiLoadingMsg[Random().nextInt(
-                                  aiLoadingMsg.length,
-                                )],
-                              ),
-                            ],
-                          ),
-                    ],
+            if (isLoading || isAiLoading)
+              Positioned.fill(
+                child: Scaffold(
+                  backgroundColor: Colors.white.withAlpha(175),
+                  body: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          "assets/loading_orange.png",
+                          fit: BoxFit.fitWidth,
+                        ),
+                        SizedBox(height: 20),
+                        isLoading
+                            ? Column(
+                              children: [
+                                Text(
+                                  loadingMsg[Random().nextInt(
+                                    loadingMsg.length,
+                                  )],
+                                ),
+                              ],
+                            )
+                            : Column(
+                              children: [
+                                Text(
+                                  "${loadingMsg[Random().nextInt(loadingMsg.length)]}(완료)",
+                                ),
+                                Text(
+                                  aiLoadingMsg[Random().nextInt(
+                                    aiLoadingMsg.length,
+                                  )],
+                                ),
+                              ],
+                            ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
           ],
         );
       },

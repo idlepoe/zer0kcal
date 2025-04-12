@@ -4,6 +4,7 @@ import 'package:zer0kcal/features/result/models/calorie_result.dart';
 
 import '../data_provider/ai_provider.dart';
 import '../data_provider/firestore_provider.dart';
+import '../features/feed/models/feed.dart';
 import 'feed_repository.dart';
 
 class FeedRepositoryImpl implements FeedRepository {
@@ -18,12 +19,6 @@ class FeedRepositoryImpl implements FeedRepository {
   }
 
   @override
-  Future<List<String>> fetchPosts() {
-    // TODO: implement fetchPosts
-    throw UnimplementedError();
-  }
-
-  @override
   Future<String> getFoodAnswer({required String imageUrl}) {
     return aiProvider.getFoodAnswer(imageUrl: imageUrl);
   }
@@ -31,5 +26,15 @@ class FeedRepositoryImpl implements FeedRepository {
   @override
   Future<bool> uploadPost({required CalorieResult calorieResult}) {
     return fireProvider.uploadPost(calorieResult: calorieResult);
+  }
+
+  @override
+  Future<List<Feed>> fetchFeed() async {
+    List<Map<String, dynamic>> result = await fireProvider.fetchFeed();
+    List<Feed> resultList = [];
+    for (Map<String, dynamic> row in result) {
+      resultList.add(Feed.fromJson(row));
+    }
+    return resultList;
   }
 }

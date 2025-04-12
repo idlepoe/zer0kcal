@@ -12,14 +12,15 @@ class UploadBloc extends Bloc<UploadEvent, UploadState> {
       emit(UploadLoading());
       String url = await repository.uploadPicture(xFile: event.xFile);
       if (url.isNotEmpty) {
+        emit(UploadAiLoading());
         String answer = await repository.getFoodAnswer(imageUrl: url);
         if (answer.isEmpty) {
-          emit(UploadFailure(message: "사진 업로드에 오류가 발생하였습니다."));
+          emit(UploadFailure(message: "앗! 사진이 미끄러졌어요. 다시 한번 부탁해요."));
         } else {
           emit(UploadSuccess(result: CalorieResult(url: url, result: answer)));
         }
       } else {
-        emit(UploadFailure(message: "사진 업로드에 오류가 발생하였습니다."));
+        emit(UploadFailure(message: "앗! 사진이 미끄러졌어요. 다시 한번 부탁해요."));
       }
     });
   }

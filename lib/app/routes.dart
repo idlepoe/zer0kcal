@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zer0kcal/data_provider/ai_provider.dart';
+import 'package:zer0kcal/features/feed/bloc/feed_bloc.dart';
 import 'package:zer0kcal/features/result/models/calorie_result.dart';
 import 'package:zer0kcal/features/result/screens/result_screen.dart';
 import 'package:zer0kcal/features/upload/bloc/upload_bloc.dart';
@@ -8,6 +9,7 @@ import 'package:zer0kcal/repositories/feed_repository_impl.dart';
 
 import '../data_provider/firestore_provider.dart';
 import '../features/feed/screens/feed_screen.dart';
+import '../features/result/bloc/result_bloc.dart';
 import '../features/splash/screens/splash_screen.dart';
 import '../features/upload/screens/upload_screen.dart';
 
@@ -16,7 +18,17 @@ class AppRouter {
     initialLocation: '/',
     routes: [
       GoRoute(path: '/', builder: (context, state) => const SplashScreen()),
-      GoRoute(path: '/feed', builder: (context, state) => const FeedScreen()),
+      GoRoute(
+        path: '/feed',
+        builder:
+            (context, state) => BlocProvider(
+              create:
+                  (context) => FeedBloc(
+                    FeedRepositoryImpl(FirestoreProvider(), AiProvider()),
+                  ),
+              child: FeedScreen(),
+            ),
+      ),
       GoRoute(
         path: '/upload',
         builder:
@@ -42,7 +54,7 @@ class AppRouter {
           }
           return BlocProvider(
             create:
-                (context) => UploadBloc(
+                (context) => ResultBloc(
                   FeedRepositoryImpl(FirestoreProvider(), AiProvider()),
                 ),
             child: ResultScreen(calorieResult: result),

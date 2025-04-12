@@ -11,7 +11,7 @@ Widget BottomNavigationButton({
   bool isLoading = false,
 }) {
   return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 10),
+    padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
     child: AppButton(
       buttonText: buttonText,
       onTap: onTap,

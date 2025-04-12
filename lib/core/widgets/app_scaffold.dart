@@ -23,17 +23,21 @@ class AppScaffold extends StatelessWidget {
       decoration: BoxDecoration(
         gradient:
             gradient ??
-            RadialGradient(
-              center: const Alignment(0, -0.3),
-              radius: 1.2,
-              colors: [AppColors.brandColor, AppColors.brandSubColor],
-            ),
+                LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    AppColors.brandColor,
+                    AppColors.resultBackColor,
+                    AppColors.brandColor,
+                  ],
+                ),
       ),
       child: SafeArea(
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-            backgroundColor: AppColors.brandColor,
+            backgroundColor: Colors.transparent,
             leading:
                 ModalRoute.of(context)!.canPop
                     ? IconButton(

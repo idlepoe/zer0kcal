@@ -25,7 +25,9 @@ class AiProvider {
       // logger.d(response.candidates.first.content.parts.first);
       // logger.d(response.promptFeedback!.toString());
       // logger.d(response.usageMetadata);
-      result = response.candidates.first.content.parts.first.toString();
+      result =
+          ((response.candidates.first.content.parts.first) as TextPart).text;
+      logger.d(result);
     } catch (e) {
       logger.e(e);
     }
