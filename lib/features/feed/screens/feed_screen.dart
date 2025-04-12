@@ -9,6 +9,7 @@ import 'package:zer0kcal/core/widgets/app_inkwell.dart';
 import 'package:zer0kcal/features/feed/bloc/feed_bloc.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/widgets/app_network_image.dart';
 import '../../../core/widgets/app_scaffold.dart';
 import '../../../core/widgets/bottom_navigation_button.dart';
 import '../../../core/widgets/no_data.dart';
@@ -52,7 +53,7 @@ class FeedScreen extends StatelessWidget {
                 context.read<FeedBloc>().add(FeedUploadPressed());
               },
               child: Padding(
-                padding: const EdgeInsets.only(top: 5),
+                padding: const EdgeInsets.all(5),
                 child: Image.asset("assets/ic_upload_feed.png"),
               ),
             ),
@@ -70,24 +71,22 @@ class FeedScreen extends StatelessWidget {
                       builder: (context, RefreshStatus? mode) {
                         if (mode == RefreshStatus.idle ||
                             mode == RefreshStatus.canRefresh) {
-                          // 당기기 전 (기본 대기 상태)
                           return Image.asset(
-                            'assets/ic_idle_loading.png', // 🍊 당겨주세요 이미지
+                            'assets/ic_idle_loading.png',
                             height: 80,
                           );
                         } else if (mode == RefreshStatus.refreshing) {
-                          // 로딩 중
                           return Image.asset(
-                            'assets/ic_loading.png', // 🍊 로딩 중 이미지
+                            'assets/ic_loading.png',
                             height: 80,
                           );
                         } else if (mode == RefreshStatus.completed) {
                           return Image.asset(
-                            'assets/ic_complete_loading.png', // 🍊 로딩 중 이미지
+                            'assets/ic_complete_loading.png',
                             height: 80,
                           );
                         } else {
-                          return SizedBox.shrink(); // 그 외: releaseToRefresh 등
+                          return SizedBox.shrink();
                         }
                       },
                     ),
@@ -130,7 +129,7 @@ class FeedScreen extends StatelessWidget {
       if (i < items.length) {
         tiles.add(
           StaggeredGridTile.count(
-            crossAxisCellCount: 3,
+            crossAxisCellCount: 2,
             mainAxisCellCount: 0.8,
             child: _buildFeedCardWithMascote(items[i], i),
           ),
@@ -164,9 +163,10 @@ class FeedScreen extends StatelessWidget {
         child: Column(
           children: [
             Expanded(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.network(item.url, fit: BoxFit.cover),
+              child: AppNetworkImage(
+                url: item.url,
+                width: double.infinity,
+                fit: BoxFit.cover,
               ),
             ),
           ],
@@ -221,24 +221,28 @@ class FeedScreen extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.network(
-              item.url,
-              height: 100,
-              width: double.infinity,
-              fit: BoxFit.cover,
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: AppNetworkImage(
+                url: item.url,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           const SizedBox(height: 8),
-          Text(
-            item.result,
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
-              color: AppColors.textColor,
+          Container(
+            height: 80,
+            child: Text(
+              item.result,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+                color: AppColors.textColor,
+              ),
             ),
           ),
         ],

@@ -16,6 +16,7 @@ import 'package:zer0kcal/features/result/models/calorie_result.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/logger.dart';
 import '../../../core/utils/app_utils.dart';
+import '../../../core/widgets/app_network_image.dart';
 import '../../../core/widgets/app_scaffold.dart';
 import '../bloc/result_state.dart';
 import '../bloc/result_bloc.dart';
@@ -114,25 +115,7 @@ class ResultScreen extends StatelessWidget {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
                           ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: CachedNetworkImage(
-                              imageUrl: calorieResult.url,
-                              progressIndicatorBuilder:
-                                  (context, url, downloadProgress) => Center(
-                                    child: Container(
-                                      height: 30,
-                                      width: 30,
-                                      child: CircularProgressIndicator(
-                                        strokeCap: StrokeCap.round,
-                                        color: AppColors.textColor,
-                                      ),
-                                    ),
-                                  ),
-                              errorWidget:
-                                  (context, url, error) => Icon(Icons.error),
-                            ),
-                          ),
+                          child: AppNetworkImage(url: calorieResult.url),
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(
