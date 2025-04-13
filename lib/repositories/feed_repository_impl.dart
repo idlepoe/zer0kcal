@@ -35,7 +35,9 @@ class FeedRepositoryImpl implements FeedRepository {
     List<Map<String, dynamic>> result = await fireProvider.getFeedList();
     List<Feed> resultList = [];
     for (Map<String, dynamic> row in result) {
+      logger.w(row);
       resultList.add(Feed.fromJson(row));
+
     }
     return resultList;
   }

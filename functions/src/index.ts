@@ -20,6 +20,7 @@ exports.getFeedList = onRequest({cors: true}, async (request, response) => {
 
         const snapshot = await getFirestore()
             .collection("feed")
+            .orderBy("created_at", "desc")
             .get();
 
         snapshot.forEach(doc => {

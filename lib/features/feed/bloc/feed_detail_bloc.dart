@@ -14,6 +14,7 @@ class FeedDetailBloc extends Bloc<FeedEvent, FeedState> {
   FeedDetailBloc(this.repository) : super(FeedInitial()) {
     on<FeedDetailFetch>((event, emit) async {
       try {
+        emit(FeedLoading());
         Feed posts = await repository.getFeedDetail(feedID: event.feedID);
         _cache = posts;
         emit(FeedDetailFetchSuccess(result: posts));

@@ -11,6 +11,9 @@ String _stringFromJson(dynamic s) {
 
 DateTime _fromTimestamp(dynamic value) {
   if (value == null) return DateTime.now();
+  if (value is Map<String, dynamic> && value.containsKey('_seconds')) {
+    return DateTime.fromMillisecondsSinceEpoch(value['_seconds'] * 1000);
+  }
   return value is Timestamp ? (value as Timestamp).toDate() : DateTime.now();
 }
 

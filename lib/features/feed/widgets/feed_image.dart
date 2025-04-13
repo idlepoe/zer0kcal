@@ -76,7 +76,8 @@ Widget FeedImage({required Feed item, bool isShowDetail = true}) {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        AppUtils.timeAgo(item.created_at),
+                        // item.created_at.toIso8601String(),
+                        AppUtils.timeAgo(item.updated_at),
                         style: TextStyle(color: AppColors.textColor),
                       ),
                     ],

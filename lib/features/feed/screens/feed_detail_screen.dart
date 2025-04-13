@@ -75,12 +75,16 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
         }
       },
       builder: (context, FeedState state) {
+        bool _isLoading = false;
         Feed? item = null;
         if (state is FeedFailure) {
           // _refreshController.refreshCompleted();
         }
         if (state is FeedDetailFetchSuccess) {
           item = state.result;
+        }
+        if (state is FeedLoading) {
+          _isLoading = true;
         }
         return AppScaffold(
           gradient: LinearGradient(
@@ -92,7 +96,18 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
             ],
           ),
           body:
-              item == null
+              _isLoading
+                  ? Center(
+                    child: Container(
+                      height: 30,
+                      width: 30,
+                      child: CircularProgressIndicator(
+                        strokeCap: StrokeCap.round,
+                        color: AppColors.textColor,
+                      ),
+                    ),
+                  )
+                  : item == null
                   ? NoDataMascote(msg: "해당 피드를 찾을 수 없습니다.")
                   : SingleChildScrollView(
                     child: Padding(
@@ -161,7 +176,7 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                           ),
                           SizedBox(height: 5),
                           Text(
-                            AppUtils.timeAgo(item.created_at),
+                            AppUtils.timeAgo(item.updated_at),
                             style: TextStyle(
                               color: AppColors.textColor,
                               fontSize: 18,
@@ -226,7 +241,7 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                 ),
                                 subtitle: Text(
                                   AppUtils.timeAgo(
-                                    item!.comments[index].created_at,
+                                    item!.comments[index].updated_at,
                                   ),
                                   style: TextStyle(color: AppColors.textColor),
                                 ),
