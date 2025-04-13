@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Feed {
 
-@JsonKey(fromJson: _stringFromJson) String get id;@JsonKey(fromJson: _stringFromJson) String get url;@JsonKey(fromJson: _stringFromJson) String get result;@JsonKey(fromJson: _fromInt) int get likeCnt;@JsonKey(fromJson: _fromInt) int get commentCnt;@JsonKey(fromJson: _fromTimestamp) DateTime get createdAt;
+@JsonKey(fromJson: _stringFromJson) String get id;@JsonKey(fromJson: _stringFromJson) String get url;@JsonKey(fromJson: _stringFromJson) String get message;@JsonKey(fromJson: _fromInt) int get cnt_like;@JsonKey(fromJson: _fromInt) int get cnt_comment;@JsonKey(fromJson: _fromTimestamp) DateTime get created_at;
 /// Create a copy of Feed
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $FeedCopyWith<Feed> get copyWith => _$FeedCopyWithImpl<Feed>(this as Feed, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Feed&&(identical(other.id, id) || other.id == id)&&(identical(other.url, url) || other.url == url)&&(identical(other.result, result) || other.result == result)&&(identical(other.likeCnt, likeCnt) || other.likeCnt == likeCnt)&&(identical(other.commentCnt, commentCnt) || other.commentCnt == commentCnt)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Feed&&(identical(other.id, id) || other.id == id)&&(identical(other.url, url) || other.url == url)&&(identical(other.message, message) || other.message == message)&&(identical(other.cnt_like, cnt_like) || other.cnt_like == cnt_like)&&(identical(other.cnt_comment, cnt_comment) || other.cnt_comment == cnt_comment)&&(identical(other.created_at, created_at) || other.created_at == created_at));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,url,result,likeCnt,commentCnt,createdAt);
+int get hashCode => Object.hash(runtimeType,id,url,message,cnt_like,cnt_comment,created_at);
 
 @override
 String toString() {
-  return 'Feed(id: $id, url: $url, result: $result, likeCnt: $likeCnt, commentCnt: $commentCnt, createdAt: $createdAt)';
+  return 'Feed(id: $id, url: $url, message: $message, cnt_like: $cnt_like, cnt_comment: $cnt_comment, created_at: $created_at)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $FeedCopyWith<$Res>  {
   factory $FeedCopyWith(Feed value, $Res Function(Feed) _then) = _$FeedCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(fromJson: _stringFromJson) String id,@JsonKey(fromJson: _stringFromJson) String url,@JsonKey(fromJson: _stringFromJson) String result,@JsonKey(fromJson: _fromInt) int likeCnt,@JsonKey(fromJson: _fromInt) int commentCnt,@JsonKey(fromJson: _fromTimestamp) DateTime createdAt
+@JsonKey(fromJson: _stringFromJson) String id,@JsonKey(fromJson: _stringFromJson) String url,@JsonKey(fromJson: _stringFromJson) String message,@JsonKey(fromJson: _fromInt) int cnt_like,@JsonKey(fromJson: _fromInt) int cnt_comment,@JsonKey(fromJson: _fromTimestamp) DateTime created_at
 });
 
 
@@ -66,14 +66,14 @@ class _$FeedCopyWithImpl<$Res>
 
 /// Create a copy of Feed
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? url = null,Object? result = null,Object? likeCnt = null,Object? commentCnt = null,Object? createdAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? url = null,Object? message = null,Object? cnt_like = null,Object? cnt_comment = null,Object? created_at = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
-as String,result: null == result ? _self.result : result // ignore: cast_nullable_to_non_nullable
-as String,likeCnt: null == likeCnt ? _self.likeCnt : likeCnt // ignore: cast_nullable_to_non_nullable
-as int,commentCnt: null == commentCnt ? _self.commentCnt : commentCnt // ignore: cast_nullable_to_non_nullable
-as int,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as String,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,cnt_like: null == cnt_like ? _self.cnt_like : cnt_like // ignore: cast_nullable_to_non_nullable
+as int,cnt_comment: null == cnt_comment ? _self.cnt_comment : cnt_comment // ignore: cast_nullable_to_non_nullable
+as int,created_at: null == created_at ? _self.created_at : created_at // ignore: cast_nullable_to_non_nullable
 as DateTime,
   ));
 }
@@ -85,15 +85,15 @@ as DateTime,
 @JsonSerializable()
 
 class _Feed implements Feed {
-  const _Feed({@JsonKey(fromJson: _stringFromJson) required this.id, @JsonKey(fromJson: _stringFromJson) required this.url, @JsonKey(fromJson: _stringFromJson) required this.result, @JsonKey(fromJson: _fromInt) required this.likeCnt, @JsonKey(fromJson: _fromInt) required this.commentCnt, @JsonKey(fromJson: _fromTimestamp) required this.createdAt});
+  const _Feed({@JsonKey(fromJson: _stringFromJson) required this.id, @JsonKey(fromJson: _stringFromJson) required this.url, @JsonKey(fromJson: _stringFromJson) required this.message, @JsonKey(fromJson: _fromInt) required this.cnt_like, @JsonKey(fromJson: _fromInt) required this.cnt_comment, @JsonKey(fromJson: _fromTimestamp) required this.created_at});
   factory _Feed.fromJson(Map<String, dynamic> json) => _$FeedFromJson(json);
 
 @override@JsonKey(fromJson: _stringFromJson) final  String id;
 @override@JsonKey(fromJson: _stringFromJson) final  String url;
-@override@JsonKey(fromJson: _stringFromJson) final  String result;
-@override@JsonKey(fromJson: _fromInt) final  int likeCnt;
-@override@JsonKey(fromJson: _fromInt) final  int commentCnt;
-@override@JsonKey(fromJson: _fromTimestamp) final  DateTime createdAt;
+@override@JsonKey(fromJson: _stringFromJson) final  String message;
+@override@JsonKey(fromJson: _fromInt) final  int cnt_like;
+@override@JsonKey(fromJson: _fromInt) final  int cnt_comment;
+@override@JsonKey(fromJson: _fromTimestamp) final  DateTime created_at;
 
 /// Create a copy of Feed
 /// with the given fields replaced by the non-null parameter values.
@@ -108,16 +108,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Feed&&(identical(other.id, id) || other.id == id)&&(identical(other.url, url) || other.url == url)&&(identical(other.result, result) || other.result == result)&&(identical(other.likeCnt, likeCnt) || other.likeCnt == likeCnt)&&(identical(other.commentCnt, commentCnt) || other.commentCnt == commentCnt)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Feed&&(identical(other.id, id) || other.id == id)&&(identical(other.url, url) || other.url == url)&&(identical(other.message, message) || other.message == message)&&(identical(other.cnt_like, cnt_like) || other.cnt_like == cnt_like)&&(identical(other.cnt_comment, cnt_comment) || other.cnt_comment == cnt_comment)&&(identical(other.created_at, created_at) || other.created_at == created_at));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,url,result,likeCnt,commentCnt,createdAt);
+int get hashCode => Object.hash(runtimeType,id,url,message,cnt_like,cnt_comment,created_at);
 
 @override
 String toString() {
-  return 'Feed(id: $id, url: $url, result: $result, likeCnt: $likeCnt, commentCnt: $commentCnt, createdAt: $createdAt)';
+  return 'Feed(id: $id, url: $url, message: $message, cnt_like: $cnt_like, cnt_comment: $cnt_comment, created_at: $created_at)';
 }
 
 
@@ -128,7 +128,7 @@ abstract mixin class _$FeedCopyWith<$Res> implements $FeedCopyWith<$Res> {
   factory _$FeedCopyWith(_Feed value, $Res Function(_Feed) _then) = __$FeedCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(fromJson: _stringFromJson) String id,@JsonKey(fromJson: _stringFromJson) String url,@JsonKey(fromJson: _stringFromJson) String result,@JsonKey(fromJson: _fromInt) int likeCnt,@JsonKey(fromJson: _fromInt) int commentCnt,@JsonKey(fromJson: _fromTimestamp) DateTime createdAt
+@JsonKey(fromJson: _stringFromJson) String id,@JsonKey(fromJson: _stringFromJson) String url,@JsonKey(fromJson: _stringFromJson) String message,@JsonKey(fromJson: _fromInt) int cnt_like,@JsonKey(fromJson: _fromInt) int cnt_comment,@JsonKey(fromJson: _fromTimestamp) DateTime created_at
 });
 
 
@@ -145,14 +145,14 @@ class __$FeedCopyWithImpl<$Res>
 
 /// Create a copy of Feed
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? url = null,Object? result = null,Object? likeCnt = null,Object? commentCnt = null,Object? createdAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? url = null,Object? message = null,Object? cnt_like = null,Object? cnt_comment = null,Object? created_at = null,}) {
   return _then(_Feed(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
-as String,result: null == result ? _self.result : result // ignore: cast_nullable_to_non_nullable
-as String,likeCnt: null == likeCnt ? _self.likeCnt : likeCnt // ignore: cast_nullable_to_non_nullable
-as int,commentCnt: null == commentCnt ? _self.commentCnt : commentCnt // ignore: cast_nullable_to_non_nullable
-as int,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as String,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,cnt_like: null == cnt_like ? _self.cnt_like : cnt_like // ignore: cast_nullable_to_non_nullable
+as int,cnt_comment: null == cnt_comment ? _self.cnt_comment : cnt_comment // ignore: cast_nullable_to_non_nullable
+as int,created_at: null == created_at ? _self.created_at : created_at // ignore: cast_nullable_to_non_nullable
 as DateTime,
   ));
 }

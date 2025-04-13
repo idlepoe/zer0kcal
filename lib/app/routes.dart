@@ -46,7 +46,7 @@ class AppRouter {
           var result = CalorieResult(
             url:
                 "https://firebasestorage.googleapis.com/v0/b/zer0kcal.firebasestorage.app/o/images%2F20250412083747533_1000017911.jpg?alt=media&token=285c4a69-239b-4f11-84dc-d571bd1b8da9",
-            result:
+            message:
                 "🍞 이건 크림이 듬뿍 올라간 달콤한 와플이에요!\n겉은 바삭하고 속은 촉촉해 보이고,\n위에는 부드러운 생크림과 과일이 살짝 얹어져 있어서 보는 것만으로도 기분이 좋아져요 😊",
           );
           if (state.extra != null) {

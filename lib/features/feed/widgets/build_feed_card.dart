@@ -14,7 +14,7 @@ Widget buildFeedCard(Feed item, int index) {
         FeedImage(item:item),
         const SizedBox(height: 8),
         Text(
-          item.result,
+          item.message,
           textAlign: TextAlign.center,
           maxLines: 2,
           style: TextStyle(

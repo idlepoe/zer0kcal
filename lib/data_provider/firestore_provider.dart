@@ -3,32 +3,40 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:zer0kcal/features/result/models/calorie_result.dart';
 
+import '../core/constants/api_constants.dart';
+import '../core/dio.dart';
 import '../core/logger.dart';
 import '../core/utils/app_utils.dart';
 
 class FirestoreProvider {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  Future<List<Map<String, dynamic>>> fetchFeed() async {
-    final snapshot =
-        await _db
-            .collection('feed')
-            .orderBy("createdAt", descending: true)
-            .get();
-    return snapshot.docs.map((doc) => doc.data()).toList();
+  Future<List<Map<String, dynamic>>> getFeedList() async {
+    try {
+      final response = await dio.get(ApiConstants.getFeed);
+
+      final data = response.data;
+      final List<dynamic> rows = data['result'];
+
+      return rows.cast<Map<String, dynamic>>();
+    } catch (e) {
+      print("에러 발생: $e");
+      rethrow;
+    }
   }
 
-  Future<bool> uploadPost({required CalorieResult calorieResult}) async {
+  Future<bool> writeFeed({required CalorieResult param}) async {
     try {
-      var addResult = await _db.collection('feed').add({
-        ...calorieResult.toJson(),
-        "likeCnt": 0,
-        "commentCnt": 0,
-        "id": AppUtils.getDateTimeKey(),
-        "createdAt": DateTime.now(),
-      });
+      final response = await dio.get(
+        ApiConstants.writeFeed,
+        data: param.toJson(),
+      );
+      if (response.statusCode != 200) {
+        throw ("에러");
+      }
     } catch (e) {
-      logger.e(e);
+      print("에러 발생: $e");
+      return false;
     }
     return true;
   }

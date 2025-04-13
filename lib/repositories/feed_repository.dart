@@ -8,7 +8,7 @@ abstract class FeedRepository {
 
   Future<String> getFoodAnswer({required String imageUrl});
 
-  Future<List<Feed>> fetchFeed();
+  Future<List<Feed>> getFeedList();
 
-  Future<bool> uploadPost({required CalorieResult calorieResult});
+  Future<bool> writeFeed({required CalorieResult param});
 }

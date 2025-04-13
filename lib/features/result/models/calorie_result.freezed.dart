@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CalorieResult {
 
-@JsonKey(fromJson: _stringFromJson) String get url;@JsonKey(fromJson: _stringFromJson) String get result;
+@JsonKey(fromJson: _stringFromJson) String get url;@JsonKey(fromJson: _stringFromJson) String get message;
 /// Create a copy of CalorieResult
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $CalorieResultCopyWith<CalorieResult> get copyWith => _$CalorieResultCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CalorieResult&&(identical(other.url, url) || other.url == url)&&(identical(other.result, result) || other.result == result));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CalorieResult&&(identical(other.url, url) || other.url == url)&&(identical(other.message, message) || other.message == message));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,url,result);
+int get hashCode => Object.hash(runtimeType,url,message);
 
 @override
 String toString() {
-  return 'CalorieResult(url: $url, result: $result)';
+  return 'CalorieResult(url: $url, message: $message)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $CalorieResultCopyWith<$Res>  {
   factory $CalorieResultCopyWith(CalorieResult value, $Res Function(CalorieResult) _then) = _$CalorieResultCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(fromJson: _stringFromJson) String url,@JsonKey(fromJson: _stringFromJson) String result
+@JsonKey(fromJson: _stringFromJson) String url,@JsonKey(fromJson: _stringFromJson) String message
 });
 
 
@@ -66,10 +66,10 @@ class _$CalorieResultCopyWithImpl<$Res>
 
 /// Create a copy of CalorieResult
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? url = null,Object? result = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? url = null,Object? message = null,}) {
   return _then(_self.copyWith(
 url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
-as String,result: null == result ? _self.result : result // ignore: cast_nullable_to_non_nullable
+as String,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -81,11 +81,11 @@ as String,
 @JsonSerializable()
 
 class _CalorieResult implements CalorieResult {
-  const _CalorieResult({@JsonKey(fromJson: _stringFromJson) required this.url, @JsonKey(fromJson: _stringFromJson) required this.result});
+  const _CalorieResult({@JsonKey(fromJson: _stringFromJson) required this.url, @JsonKey(fromJson: _stringFromJson) required this.message});
   factory _CalorieResult.fromJson(Map<String, dynamic> json) => _$CalorieResultFromJson(json);
 
 @override@JsonKey(fromJson: _stringFromJson) final  String url;
-@override@JsonKey(fromJson: _stringFromJson) final  String result;
+@override@JsonKey(fromJson: _stringFromJson) final  String message;
 
 /// Create a copy of CalorieResult
 /// with the given fields replaced by the non-null parameter values.
@@ -100,16 +100,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CalorieResult&&(identical(other.url, url) || other.url == url)&&(identical(other.result, result) || other.result == result));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CalorieResult&&(identical(other.url, url) || other.url == url)&&(identical(other.message, message) || other.message == message));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,url,result);
+int get hashCode => Object.hash(runtimeType,url,message);
 
 @override
 String toString() {
-  return 'CalorieResult(url: $url, result: $result)';
+  return 'CalorieResult(url: $url, message: $message)';
 }
 
 
@@ -120,7 +120,7 @@ abstract mixin class _$CalorieResultCopyWith<$Res> implements $CalorieResultCopy
   factory _$CalorieResultCopyWith(_CalorieResult value, $Res Function(_CalorieResult) _then) = __$CalorieResultCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(fromJson: _stringFromJson) String url,@JsonKey(fromJson: _stringFromJson) String result
+@JsonKey(fromJson: _stringFromJson) String url,@JsonKey(fromJson: _stringFromJson) String message
 });
 
 
@@ -137,10 +137,10 @@ class __$CalorieResultCopyWithImpl<$Res>
 
 /// Create a copy of CalorieResult
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? url = null,Object? result = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? url = null,Object? message = null,}) {
   return _then(_CalorieResult(
 url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
-as String,result: null == result ? _self.result : result // ignore: cast_nullable_to_non_nullable
+as String,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

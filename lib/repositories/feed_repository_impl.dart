@@ -24,13 +24,13 @@ class FeedRepositoryImpl implements FeedRepository {
   }
 
   @override
-  Future<bool> uploadPost({required CalorieResult calorieResult}) {
-    return fireProvider.uploadPost(calorieResult: calorieResult);
+  Future<bool> writeFeed({required CalorieResult param}) {
+    return fireProvider.writeFeed(param: param);
   }
 
   @override
-  Future<List<Feed>> fetchFeed() async {
-    List<Map<String, dynamic>> result = await fireProvider.fetchFeed();
+  Future<List<Feed>> getFeedList() async {
+    List<Map<String, dynamic>> result = await fireProvider.getFeedList();
     List<Feed> resultList = [];
     for (Map<String, dynamic> row in result) {
       resultList.add(Feed.fromJson(row));

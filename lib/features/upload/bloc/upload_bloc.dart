@@ -17,7 +17,7 @@ class UploadBloc extends Bloc<UploadEvent, UploadState> {
         if (answer.isEmpty) {
           emit(UploadFailure(message: "앗! 사진이 미끄러졌어요. 다시 한번 부탁해요."));
         } else {
-          emit(UploadSuccess(result: CalorieResult(url: url, result: answer)));
+          emit(UploadSuccess(result: CalorieResult(url: url, message: answer)));
         }
       } else {
         emit(UploadFailure(message: "앗! 사진이 미끄러졌어요. 다시 한번 부탁해요."));

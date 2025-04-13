@@ -35,8 +35,8 @@ class ResultBloc extends Bloc<ResultEvent, ResultState> {
     on<ResultUploadFeedPressed>((event, emit) async {
       try {
         emit(ResultUploadFeedLoading());
-        CalorieResult calorieResult = await event.calorieResult;
-        repository.uploadPost(calorieResult: calorieResult);
+        CalorieResult calorieResult = event.calorieResult;
+        repository.writeFeed(param: calorieResult);
       } catch (e) {
         List<String> msgList = [
           "귤이가 너무 감동해서 잠깐 멈췄어요. 다시 한 번만 올려봐요!",

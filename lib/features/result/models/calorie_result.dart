@@ -12,7 +12,7 @@ String _stringFromJson(dynamic s) {
 abstract class CalorieResult with _$CalorieResult {
   const factory CalorieResult({
     @JsonKey(fromJson: _stringFromJson) required String url,
-    @JsonKey(fromJson: _stringFromJson) required String result,
+    @JsonKey(fromJson: _stringFromJson) required String message,
   }) = _CalorieResult;
 
   factory CalorieResult.fromJson(Map<String, Object?> json) =>

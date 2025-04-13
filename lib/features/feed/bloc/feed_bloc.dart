@@ -14,7 +14,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   FeedBloc(this.repository) : super(FeedInitial()) {
     on<FeedFetch>((event, emit) async {
       try {
-        List<Feed> posts = await repository.fetchFeed();
+        List<Feed> posts = await repository.getFeedList();
         logger.d(posts);
         _cache = posts;
         emit(FeedFetchSuccess(result: posts));

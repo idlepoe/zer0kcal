@@ -58,7 +58,7 @@ class ResultScreen extends StatelessWidget {
         } else if (state is ResultShareLoading) {
           final result = await Share.shareXFiles([
             state.xFile,
-          ], text: state.calorieResult.result);
+          ], text: state.calorieResult.message);
         } else if (state is ResultShareSuccess) {
         } else if (state is ResultSuccess) {
           List<String> msgList = [
@@ -131,7 +131,7 @@ class ResultScreen extends StatelessWidget {
                               ),
                               Expanded(
                                 child: Text(
-                                  calorieResult.result,
+                                  calorieResult.message,
                                   style: TextStyle(
                                     color: AppColors.textColor,
                                     fontSize: 15,

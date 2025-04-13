@@ -21,7 +21,7 @@ Widget buildFeedCardWithMascote(Feed item, int index) {
           fit: BoxFit.fitHeight,
         ),
         Text(
-          item.result,
+          item.message,
           textAlign: TextAlign.center,
           maxLines: 2,
           style: TextStyle(
