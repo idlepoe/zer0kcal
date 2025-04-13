@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../../core/dio_interceptor.dart';
 import 'comment.dart';
 
 part 'feed.freezed.dart';
@@ -20,6 +21,7 @@ int _fromInt(dynamic value) => value is int ? value : 0;
 
 List<Comment> _toListComment(dynamic value) {
   List<Comment> result = [];
+  if(value==null) return result;
   for (dynamic row in value) {
     result.add(Comment.fromJson(row));
   }

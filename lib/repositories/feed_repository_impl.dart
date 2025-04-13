@@ -3,6 +3,7 @@ import 'package:zer0kcal/data_provider/firestorage_provider.dart';
 import 'package:zer0kcal/features/feed/models/comment.dart';
 import 'package:zer0kcal/features/result/models/calorie_result.dart';
 
+import '../core/dio_interceptor.dart';
 import '../data_provider/ai_provider.dart';
 import '../data_provider/firestore_provider.dart';
 import '../features/feed/models/feed.dart';
@@ -40,8 +41,9 @@ class FeedRepositoryImpl implements FeedRepository {
   }
 
   @override
-  Future<Feed> getFeedDetail() async {
-    dynamic result = await fireProvider.getFeedList();
+  Future<Feed> getFeedDetail({required String feedID}) async {
+    logger.d("getFeedDetail");
+    Map<String, dynamic> result = await fireProvider.getFeedDetail(feedID: feedID);
     return Feed.fromJson(result);
   }
 

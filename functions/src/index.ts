@@ -40,20 +40,24 @@ exports.getFeedList = onRequest({cors: true}, async (request, response) => {
         });
 
         response.status(200).json({result: result});
+        return;
     } catch (e) {
         if (e instanceof Error) {
             console.error(e.message);
             response.status(500).json({result: e.message});
+        } else {
+            response.status(500).json({result: e});
         }
-        response.status(500).json({result: e});
     }
 });
 
 exports.getFeedDetail = onRequest({cors: true}, async (request, response) => {
     logger.info("getFeedDetail");
+    logger.log(request.body);
     try {
 
-        const feedID = request.params.id;
+        const feedID = request.body.feed_id;
+        logger.log(feedID);
 
         const result: Feed[] = [];
 
@@ -64,7 +68,7 @@ exports.getFeedDetail = onRequest({cors: true}, async (request, response) => {
         const data = snapshot.data();
         if (data != undefined) {
             const feed: Feed = {
-                id: data.id,
+                id: feedID,
                 url: data.url,
                 message: data!.message,
                 cnt_like: Number(data.cnt_like),
@@ -100,12 +104,14 @@ exports.getFeedDetail = onRequest({cors: true}, async (request, response) => {
             targetFeed.comments = commentList;
         }
         response.status(200).json({result: targetFeed});
+        return;
     } catch (e) {
         if (e instanceof Error) {
             console.error(e.message);
             response.status(500).json({result: e.message});
+        } else {
+            response.status(500).json({result: e});
         }
-        response.status(500).json({result: e});
     }
 });
 
@@ -121,12 +127,14 @@ exports.writeFeed = onRequest({cors: true}, async (request, response) => {
                 updated_at: Timestamp.now(),
             });
         response.status(200).json({result: `feed ${writeResult.id} created`});
+        return;
     } catch (e) {
         if (e instanceof Error) {
             console.error(e.message);
             response.status(500).json({result: e.message});
+        } else {
+            response.status(500).json({result: e});
         }
-        response.status(500).json({result: e});
     }
 });
 
@@ -134,7 +142,7 @@ exports.writeComment = onRequest({cors: true}, async (request, response) => {
     logger.info("writeComment");
     logger.log(request.body);
     try {
-        const targetFeedID = request.params.feed_id;
+        const targetFeedID = request.body.feed_id;
 
         const writeResult = await getFirestore()
             .collection("comment")
@@ -153,12 +161,14 @@ exports.writeComment = onRequest({cors: true}, async (request, response) => {
         });
 
         response.status(200).json({result: `feed ${writeResult.id} created`});
+        return;
     } catch (e) {
         if (e instanceof Error) {
             console.error(e.message);
             response.status(500).json({result: e.message});
+        } else {
+            response.status(500).json({result: e});
         }
-        response.status(500).json({result: e});
     }
 });
 
@@ -166,7 +176,7 @@ exports.countUpLike = onRequest({cors: true}, async (request, response) => {
     logger.info("countUpLike");
     logger.log(request.body);
     try {
-        const targetFeedID = request.params.feed_id;
+        const targetFeedID = request.body.feed_id;
 
         const commentUpTarget = getFirestore()
             .collection("feed").doc(targetFeedID);
@@ -176,11 +186,13 @@ exports.countUpLike = onRequest({cors: true}, async (request, response) => {
         });
 
         response.status(200).json({result: `countUpLike success`});
+        return;
     } catch (e) {
         if (e instanceof Error) {
             console.error(e.message);
             response.status(500).json({result: e.message});
+        } else {
+            response.status(500).json({result: e});
         }
-        response.status(500).json({result: e});
     }
 });

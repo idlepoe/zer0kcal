@@ -13,7 +13,7 @@ abstract class FeedRepository {
 
   Future<bool> writeFeed({required CalorieResult param});
 
-  Future<Feed> getFeedDetail();
+  Future<Feed> getFeedDetail({required String feedID});
 
   Future<bool> writeComment({required Comment param});
 

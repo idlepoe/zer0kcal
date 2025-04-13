@@ -5,7 +5,7 @@ import '../models/feed.dart';
 import 'build_feed_card.dart';
 import 'build_feed_card_mascote.dart';
 
-List<StaggeredGridTile> buildStaggeredFeedTiles(List<Feed> items) {
+List<StaggeredGridTile> buildStaggeredFeedTiles(List<Feed> items,{required Function(Feed) onTap}) {
   List<StaggeredGridTile> tiles = [];
 
   for (int i = 0; i < items.length;) {
@@ -15,7 +15,7 @@ List<StaggeredGridTile> buildStaggeredFeedTiles(List<Feed> items) {
         StaggeredGridTile.count(
           crossAxisCellCount: 2,
           mainAxisCellCount: 0.8,
-          child: buildFeedCardWithMascote(items[i], i),
+          child: buildFeedCardWithMascote(items[i], i, onTap:onTap),
         ),
       );
       i++;
@@ -27,12 +27,12 @@ List<StaggeredGridTile> buildStaggeredFeedTiles(List<Feed> items) {
         StaggeredGridTile.count(
           crossAxisCellCount: 1,
           mainAxisCellCount: 0.9,
-          child: buildFeedCard(items[i], i),
+          child: buildFeedCard(items[i], i, onTap:onTap),
         ),
         StaggeredGridTile.count(
           crossAxisCellCount: 1,
           mainAxisCellCount: 0.9,
-          child: buildFeedCard(items[i + 1], i),
+          child: buildFeedCard(items[i + 1], i, onTap: onTap),
         ),
       ]);
       i += 2;
@@ -40,3 +40,4 @@ List<StaggeredGridTile> buildStaggeredFeedTiles(List<Feed> items) {
   }
   return tiles;
 }
+

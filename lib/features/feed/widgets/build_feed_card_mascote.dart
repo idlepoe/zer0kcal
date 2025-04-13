@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
+import 'package:zer0kcal/core/widgets/app_inkwell.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/dio_interceptor.dart';
 import '../../../core/widgets/app_network_image.dart';
 import '../models/feed.dart';
 import 'feed_image.dart';
 
-Widget buildFeedCardWithMascote(Feed item, int index) {
+Widget buildFeedCardWithMascote(Feed item, int index, {required Function(Feed) onTap}) {
   Widget imgWidget = Expanded(
     child: Container(child: Column(children: [FeedImage(item: item)])),
   );
@@ -34,15 +36,20 @@ Widget buildFeedCardWithMascote(Feed item, int index) {
     ),
   );
 
-  return Container(
-    decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
-    padding: const EdgeInsets.all(8),
-    child: IntrinsicHeight(
-      child: Row(
-        children:
-            index % 4 == 0
-                ? [imgWidget, SizedBox(width: 10), descWidget]
-                : [descWidget, SizedBox(width: 10), imgWidget],
+  return AppInkWell(
+    onTap: () {
+      onTap(item);
+    },
+    child: Container(
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
+      padding: const EdgeInsets.all(8),
+      child: IntrinsicHeight(
+        child: Row(
+          children:
+              index % 4 == 0
+                  ? [imgWidget, SizedBox(width: 10), descWidget]
+                  : [descWidget, SizedBox(width: 10), imgWidget],
+        ),
       ),
     ),
   );

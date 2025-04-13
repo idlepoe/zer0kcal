@@ -8,6 +8,7 @@ import 'package:zer0kcal/core/widgets/app_inkwell.dart';
 import 'package:zer0kcal/features/feed/bloc/feed_bloc.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/dio_interceptor.dart';
 import '../../../core/widgets/app_scaffold.dart';
 import '../../../core/widgets/no_data.dart';
 import '../bloc/feed_event.dart';
@@ -27,7 +28,9 @@ class FeedScreen extends StatelessWidget {
       listener: (context, FeedState state) async {
         if (state is FeedUploadRequested) {
           var result = await context.push("/upload");
+          logger.d(result);
           if (result == true) {
+            logger.d("result == true");
             context.read<FeedBloc>().add(FeedFetch());
           }
         } else if (state is FeedFailure) {
@@ -57,17 +60,17 @@ class FeedScreen extends StatelessWidget {
               ),
             ),
           ],
-          body:
-              SmartRefresher(
-                    controller: _refreshController,
-                    onRefresh: () {
-                      context.read<FeedBloc>().add(FeedFetch());
-                      _refreshController.refreshCompleted();
-                    },
-                    header: AppRefreshHeader(),
-                    child:  list.isEmpty
-                        ? NoDataMascote()
-                        :Padding(
+          body: SmartRefresher(
+            controller: _refreshController,
+            onRefresh: () {
+              context.read<FeedBloc>().add(FeedFetch());
+              _refreshController.refreshCompleted();
+            },
+            header: AppRefreshHeader(),
+            child:
+                list.isEmpty
+                    ? NoDataMascote()
+                    : Padding(
                       padding: const EdgeInsets.all(20),
                       child: Container(
                         decoration: BoxDecoration(
@@ -78,11 +81,19 @@ class FeedScreen extends StatelessWidget {
                           crossAxisCount: 2,
                           mainAxisSpacing: 0,
                           crossAxisSpacing: 0,
-                          children: buildStaggeredFeedTiles(list),
+                          children: buildStaggeredFeedTiles(
+                            list,
+                            onTap: (item) async {
+                              logger.d("/detail/${item.id}");
+                              var result = await context.push(
+                                "/detail/${item.id}",
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ),
-                  ),
+          ),
         );
       },
     );

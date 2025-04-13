@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zer0kcal/data_provider/ai_provider.dart';
@@ -7,7 +8,9 @@ import 'package:zer0kcal/features/result/screens/result_screen.dart';
 import 'package:zer0kcal/features/upload/bloc/upload_bloc.dart';
 import 'package:zer0kcal/repositories/feed_repository_impl.dart';
 
+import '../core/dio_interceptor.dart';
 import '../data_provider/firestore_provider.dart';
+import '../features/feed/bloc/feed_detail_bloc.dart';
 import '../features/feed/screens/feed_detail_screen.dart';
 import '../features/feed/screens/feed_screen.dart';
 import '../features/result/bloc/result_bloc.dart';
@@ -33,10 +36,12 @@ class AppRouter {
       GoRoute(
         path: '/detail/:id',
         builder: (context, state) {
+          logger.d(state);
           final id = state.pathParameters['id']!;
           return BlocProvider(
+            key: UniqueKey(),
             create:
-                (context) => FeedBloc(
+                (context) => FeedDetailBloc(
                   FeedRepositoryImpl(FirestoreProvider(), AiProvider()),
                 ),
             child: FeedDetailScreen(id: id),

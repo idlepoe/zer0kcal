@@ -19,14 +19,18 @@ class FirestoreProvider {
     }
   }
 
-  Future<List<Map<String, dynamic>>> getFeedDetail() async {
+  Future<Map<String, dynamic>> getFeedDetail({
+    required String feedID,
+  }) async {
     try {
-      final response = await dio.get(ApiConstants.getFeedDetail);
+      final response = await dio.post(
+        ApiConstants.getFeedDetail,
+        data: {"feed_id": feedID},
+      );
 
       final data = response.data;
-      final dynamic rows = data['result'];
 
-      return rows.cast<dynamic>();
+      return data['result'];
     } catch (e) {
       print("에러 발생: $e");
       rethrow;
