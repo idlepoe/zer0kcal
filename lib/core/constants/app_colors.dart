@@ -6,5 +6,5 @@ class AppColors{
   static Color textColor = Color(0xFF754B27);
   static Color resultBackColor = Color(0xFFFFB860);
   static Color brightListBackColor = Color(0xFFFFD7A9);
-
+  static Color detailBackgroundColor = Color(0xFFFFF3E0);
 }

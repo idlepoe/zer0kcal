@@ -4,21 +4,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
-import 'package:screenshot/screenshot.dart';
 import 'package:zer0kcal/core/widgets/app_inkwell.dart';
 import 'package:zer0kcal/features/feed/bloc/feed_bloc.dart';
 
 import '../../../core/constants/app_colors.dart';
-import '../../../core/widgets/app_network_image.dart';
 import '../../../core/widgets/app_scaffold.dart';
-import '../../../core/widgets/bottom_navigation_button.dart';
 import '../../../core/widgets/no_data.dart';
 import '../bloc/feed_event.dart';
 import '../bloc/feed_state.dart';
 import '../models/feed.dart';
 import '../widgets/app_refresh_header.dart';
-import '../widgets/build_feed_card.dart';
-import '../widgets/build_feed_card_mascote.dart';
 import '../widgets/build_staggered_feed_tiles.dart';
 
 class FeedScreen extends StatelessWidget {
@@ -63,16 +58,16 @@ class FeedScreen extends StatelessWidget {
             ),
           ],
           body:
-              list.isEmpty
-                  ? NoDataMascote()
-                  : SmartRefresher(
+              SmartRefresher(
                     controller: _refreshController,
                     onRefresh: () {
                       context.read<FeedBloc>().add(FeedFetch());
                       _refreshController.refreshCompleted();
                     },
                     header: AppRefreshHeader(),
-                    child: Padding(
+                    child:  list.isEmpty
+                        ? NoDataMascote()
+                        :Padding(
                       padding: const EdgeInsets.all(20),
                       child: Container(
                         decoration: BoxDecoration(

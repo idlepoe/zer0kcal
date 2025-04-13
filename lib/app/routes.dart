@@ -8,6 +8,7 @@ import 'package:zer0kcal/features/upload/bloc/upload_bloc.dart';
 import 'package:zer0kcal/repositories/feed_repository_impl.dart';
 
 import '../data_provider/firestore_provider.dart';
+import '../features/feed/screens/feed_detail_screen.dart';
 import '../features/feed/screens/feed_screen.dart';
 import '../features/result/bloc/result_bloc.dart';
 import '../features/splash/screens/splash_screen.dart';
@@ -28,6 +29,19 @@ class AppRouter {
                   ),
               child: FeedScreen(),
             ),
+      ),
+      GoRoute(
+        path: '/detail/:id',
+        builder: (context, state) {
+          final id = state.pathParameters['id']!;
+          return BlocProvider(
+            create:
+                (context) => FeedBloc(
+                  FeedRepositoryImpl(FirestoreProvider(), AiProvider()),
+                ),
+            child: FeedDetailScreen(id: id),
+          );
+        },
       ),
       GoRoute(
         path: '/upload',

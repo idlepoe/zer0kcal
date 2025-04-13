@@ -1,5 +1,6 @@
 import 'package:image_picker/image_picker.dart';
 import 'package:zer0kcal/data_provider/firestorage_provider.dart';
+import 'package:zer0kcal/features/feed/models/comment.dart';
 import 'package:zer0kcal/features/result/models/calorie_result.dart';
 
 import '../data_provider/ai_provider.dart';
@@ -36,5 +37,21 @@ class FeedRepositoryImpl implements FeedRepository {
       resultList.add(Feed.fromJson(row));
     }
     return resultList;
+  }
+
+  @override
+  Future<Feed> getFeedDetail() async {
+    dynamic result = await fireProvider.getFeedList();
+    return Feed.fromJson(result);
+  }
+
+  @override
+  Future<bool> countUpLike({required String feedID}) {
+    return fireProvider.countUpLike(param: feedID);
+  }
+
+  @override
+  Future<bool> writeComment({required Comment param}) {
+    return fireProvider.writeComment(param: param);
   }
 }

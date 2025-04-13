@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Feed {
 
-@JsonKey(fromJson: _stringFromJson) String get id;@JsonKey(fromJson: _stringFromJson) String get url;@JsonKey(fromJson: _stringFromJson) String get message;@JsonKey(fromJson: _fromInt) int get cnt_like;@JsonKey(fromJson: _fromInt) int get cnt_comment;@JsonKey(fromJson: _fromTimestamp) DateTime get created_at;
+@JsonKey(fromJson: _stringFromJson) String get id;@JsonKey(fromJson: _stringFromJson) String get url;@JsonKey(fromJson: _stringFromJson) String get message;@JsonKey(fromJson: _fromInt) int get cnt_like;@JsonKey(fromJson: _fromInt) int get cnt_comment;@JsonKey(fromJson: _toListComment) List<Comment> get comments;@JsonKey(fromJson: _fromTimestamp) DateTime get created_at;@JsonKey(fromJson: _fromTimestamp) DateTime get updated_at;
 /// Create a copy of Feed
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $FeedCopyWith<Feed> get copyWith => _$FeedCopyWithImpl<Feed>(this as Feed, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Feed&&(identical(other.id, id) || other.id == id)&&(identical(other.url, url) || other.url == url)&&(identical(other.message, message) || other.message == message)&&(identical(other.cnt_like, cnt_like) || other.cnt_like == cnt_like)&&(identical(other.cnt_comment, cnt_comment) || other.cnt_comment == cnt_comment)&&(identical(other.created_at, created_at) || other.created_at == created_at));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Feed&&(identical(other.id, id) || other.id == id)&&(identical(other.url, url) || other.url == url)&&(identical(other.message, message) || other.message == message)&&(identical(other.cnt_like, cnt_like) || other.cnt_like == cnt_like)&&(identical(other.cnt_comment, cnt_comment) || other.cnt_comment == cnt_comment)&&const DeepCollectionEquality().equals(other.comments, comments)&&(identical(other.created_at, created_at) || other.created_at == created_at)&&(identical(other.updated_at, updated_at) || other.updated_at == updated_at));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,url,message,cnt_like,cnt_comment,created_at);
+int get hashCode => Object.hash(runtimeType,id,url,message,cnt_like,cnt_comment,const DeepCollectionEquality().hash(comments),created_at,updated_at);
 
 @override
 String toString() {
-  return 'Feed(id: $id, url: $url, message: $message, cnt_like: $cnt_like, cnt_comment: $cnt_comment, created_at: $created_at)';
+  return 'Feed(id: $id, url: $url, message: $message, cnt_like: $cnt_like, cnt_comment: $cnt_comment, comments: $comments, created_at: $created_at, updated_at: $updated_at)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $FeedCopyWith<$Res>  {
   factory $FeedCopyWith(Feed value, $Res Function(Feed) _then) = _$FeedCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(fromJson: _stringFromJson) String id,@JsonKey(fromJson: _stringFromJson) String url,@JsonKey(fromJson: _stringFromJson) String message,@JsonKey(fromJson: _fromInt) int cnt_like,@JsonKey(fromJson: _fromInt) int cnt_comment,@JsonKey(fromJson: _fromTimestamp) DateTime created_at
+@JsonKey(fromJson: _stringFromJson) String id,@JsonKey(fromJson: _stringFromJson) String url,@JsonKey(fromJson: _stringFromJson) String message,@JsonKey(fromJson: _fromInt) int cnt_like,@JsonKey(fromJson: _fromInt) int cnt_comment,@JsonKey(fromJson: _toListComment) List<Comment> comments,@JsonKey(fromJson: _fromTimestamp) DateTime created_at,@JsonKey(fromJson: _fromTimestamp) DateTime updated_at
 });
 
 
@@ -66,14 +66,16 @@ class _$FeedCopyWithImpl<$Res>
 
 /// Create a copy of Feed
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? url = null,Object? message = null,Object? cnt_like = null,Object? cnt_comment = null,Object? created_at = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? url = null,Object? message = null,Object? cnt_like = null,Object? cnt_comment = null,Object? comments = null,Object? created_at = null,Object? updated_at = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
 as String,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,cnt_like: null == cnt_like ? _self.cnt_like : cnt_like // ignore: cast_nullable_to_non_nullable
 as int,cnt_comment: null == cnt_comment ? _self.cnt_comment : cnt_comment // ignore: cast_nullable_to_non_nullable
-as int,created_at: null == created_at ? _self.created_at : created_at // ignore: cast_nullable_to_non_nullable
+as int,comments: null == comments ? _self.comments : comments // ignore: cast_nullable_to_non_nullable
+as List<Comment>,created_at: null == created_at ? _self.created_at : created_at // ignore: cast_nullable_to_non_nullable
+as DateTime,updated_at: null == updated_at ? _self.updated_at : updated_at // ignore: cast_nullable_to_non_nullable
 as DateTime,
   ));
 }
@@ -85,7 +87,7 @@ as DateTime,
 @JsonSerializable()
 
 class _Feed implements Feed {
-  const _Feed({@JsonKey(fromJson: _stringFromJson) required this.id, @JsonKey(fromJson: _stringFromJson) required this.url, @JsonKey(fromJson: _stringFromJson) required this.message, @JsonKey(fromJson: _fromInt) required this.cnt_like, @JsonKey(fromJson: _fromInt) required this.cnt_comment, @JsonKey(fromJson: _fromTimestamp) required this.created_at});
+  const _Feed({@JsonKey(fromJson: _stringFromJson) required this.id, @JsonKey(fromJson: _stringFromJson) required this.url, @JsonKey(fromJson: _stringFromJson) required this.message, @JsonKey(fromJson: _fromInt) required this.cnt_like, @JsonKey(fromJson: _fromInt) required this.cnt_comment, @JsonKey(fromJson: _toListComment) required final  List<Comment> comments, @JsonKey(fromJson: _fromTimestamp) required this.created_at, @JsonKey(fromJson: _fromTimestamp) required this.updated_at}): _comments = comments;
   factory _Feed.fromJson(Map<String, dynamic> json) => _$FeedFromJson(json);
 
 @override@JsonKey(fromJson: _stringFromJson) final  String id;
@@ -93,7 +95,15 @@ class _Feed implements Feed {
 @override@JsonKey(fromJson: _stringFromJson) final  String message;
 @override@JsonKey(fromJson: _fromInt) final  int cnt_like;
 @override@JsonKey(fromJson: _fromInt) final  int cnt_comment;
+ final  List<Comment> _comments;
+@override@JsonKey(fromJson: _toListComment) List<Comment> get comments {
+  if (_comments is EqualUnmodifiableListView) return _comments;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_comments);
+}
+
 @override@JsonKey(fromJson: _fromTimestamp) final  DateTime created_at;
+@override@JsonKey(fromJson: _fromTimestamp) final  DateTime updated_at;
 
 /// Create a copy of Feed
 /// with the given fields replaced by the non-null parameter values.
@@ -108,16 +118,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Feed&&(identical(other.id, id) || other.id == id)&&(identical(other.url, url) || other.url == url)&&(identical(other.message, message) || other.message == message)&&(identical(other.cnt_like, cnt_like) || other.cnt_like == cnt_like)&&(identical(other.cnt_comment, cnt_comment) || other.cnt_comment == cnt_comment)&&(identical(other.created_at, created_at) || other.created_at == created_at));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Feed&&(identical(other.id, id) || other.id == id)&&(identical(other.url, url) || other.url == url)&&(identical(other.message, message) || other.message == message)&&(identical(other.cnt_like, cnt_like) || other.cnt_like == cnt_like)&&(identical(other.cnt_comment, cnt_comment) || other.cnt_comment == cnt_comment)&&const DeepCollectionEquality().equals(other._comments, _comments)&&(identical(other.created_at, created_at) || other.created_at == created_at)&&(identical(other.updated_at, updated_at) || other.updated_at == updated_at));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,url,message,cnt_like,cnt_comment,created_at);
+int get hashCode => Object.hash(runtimeType,id,url,message,cnt_like,cnt_comment,const DeepCollectionEquality().hash(_comments),created_at,updated_at);
 
 @override
 String toString() {
-  return 'Feed(id: $id, url: $url, message: $message, cnt_like: $cnt_like, cnt_comment: $cnt_comment, created_at: $created_at)';
+  return 'Feed(id: $id, url: $url, message: $message, cnt_like: $cnt_like, cnt_comment: $cnt_comment, comments: $comments, created_at: $created_at, updated_at: $updated_at)';
 }
 
 
@@ -128,7 +138,7 @@ abstract mixin class _$FeedCopyWith<$Res> implements $FeedCopyWith<$Res> {
   factory _$FeedCopyWith(_Feed value, $Res Function(_Feed) _then) = __$FeedCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(fromJson: _stringFromJson) String id,@JsonKey(fromJson: _stringFromJson) String url,@JsonKey(fromJson: _stringFromJson) String message,@JsonKey(fromJson: _fromInt) int cnt_like,@JsonKey(fromJson: _fromInt) int cnt_comment,@JsonKey(fromJson: _fromTimestamp) DateTime created_at
+@JsonKey(fromJson: _stringFromJson) String id,@JsonKey(fromJson: _stringFromJson) String url,@JsonKey(fromJson: _stringFromJson) String message,@JsonKey(fromJson: _fromInt) int cnt_like,@JsonKey(fromJson: _fromInt) int cnt_comment,@JsonKey(fromJson: _toListComment) List<Comment> comments,@JsonKey(fromJson: _fromTimestamp) DateTime created_at,@JsonKey(fromJson: _fromTimestamp) DateTime updated_at
 });
 
 
@@ -145,14 +155,16 @@ class __$FeedCopyWithImpl<$Res>
 
 /// Create a copy of Feed
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? url = null,Object? message = null,Object? cnt_like = null,Object? cnt_comment = null,Object? created_at = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? url = null,Object? message = null,Object? cnt_like = null,Object? cnt_comment = null,Object? comments = null,Object? created_at = null,Object? updated_at = null,}) {
   return _then(_Feed(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
 as String,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,cnt_like: null == cnt_like ? _self.cnt_like : cnt_like // ignore: cast_nullable_to_non_nullable
 as int,cnt_comment: null == cnt_comment ? _self.cnt_comment : cnt_comment // ignore: cast_nullable_to_non_nullable
-as int,created_at: null == created_at ? _self.created_at : created_at // ignore: cast_nullable_to_non_nullable
+as int,comments: null == comments ? _self._comments : comments // ignore: cast_nullable_to_non_nullable
+as List<Comment>,created_at: null == created_at ? _self.created_at : created_at // ignore: cast_nullable_to_non_nullable
+as DateTime,updated_at: null == updated_at ? _self.updated_at : updated_at // ignore: cast_nullable_to_non_nullable
 as DateTime,
   ));
 }

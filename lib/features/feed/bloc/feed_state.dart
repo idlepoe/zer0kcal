@@ -24,6 +24,12 @@ class FeedFetchSuccess extends FeedState implements HasFeedList {
   FeedFetchSuccess({required this.result});
 }
 
+class FeedDetailFetchSuccess extends FeedState {
+  Feed result;
+
+  FeedDetailFetchSuccess({required this.result});
+}
+
 class FeedFailure extends FeedState {
   String message;
 

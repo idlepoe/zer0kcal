@@ -1,16 +1,10 @@
-import 'dart:math';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:zer0kcal/features/result/models/calorie_result.dart';
 
 import '../core/constants/api_constants.dart';
 import '../core/dio.dart';
-import '../core/logger.dart';
-import '../core/utils/app_utils.dart';
+import '../features/feed/models/comment.dart';
 
 class FirestoreProvider {
-  final FirebaseFirestore _db = FirebaseFirestore.instance;
-
   Future<List<Map<String, dynamic>>> getFeedList() async {
     try {
       final response = await dio.get(ApiConstants.getFeed);
@@ -25,11 +19,57 @@ class FirestoreProvider {
     }
   }
 
+  Future<List<Map<String, dynamic>>> getFeedDetail() async {
+    try {
+      final response = await dio.get(ApiConstants.getFeedDetail);
+
+      final data = response.data;
+      final dynamic rows = data['result'];
+
+      return rows.cast<dynamic>();
+    } catch (e) {
+      print("에러 발생: $e");
+      rethrow;
+    }
+  }
+
   Future<bool> writeFeed({required CalorieResult param}) async {
     try {
-      final response = await dio.get(
+      final response = await dio.post(
         ApiConstants.writeFeed,
         data: param.toJson(),
+      );
+      if (response.statusCode != 200) {
+        throw ("에러");
+      }
+    } catch (e) {
+      print("에러 발생: $e");
+      return false;
+    }
+    return true;
+  }
+
+  Future<bool> writeComment({required Comment param}) async {
+    try {
+      final response = await dio.post(
+        ApiConstants.writeComment,
+        data: param.toJson(),
+      );
+      if (response.statusCode != 200) {
+        throw ("에러");
+      }
+    } catch (e) {
+      print("에러 발생: $e");
+      return false;
+    }
+    return true;
+  }
+
+  Future<bool> countUpLike({required String param}) async {
+    try {
+      final response = await dio.post(
+        ApiConstants.countUpLike,
+        data: {"feed_id": param},
       );
       if (response.statusCode != 200) {
         throw ("에러");
