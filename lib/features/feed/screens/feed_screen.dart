@@ -28,6 +28,7 @@ class FeedScreen extends StatelessWidget {
       listener: (context, FeedState state) async {
         if (state is FeedUploadRequested) {
           var result = await context.push("/upload");
+          await Future.delayed(Duration(seconds: 2));
           context.read<FeedBloc>().add(FeedFetch());
         } else if (state is FeedFailure) {
           showOkAlertDialog(context: context, message: state.message);

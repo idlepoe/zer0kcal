@@ -8,7 +8,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Flutter Demo',
+      title: '제로칼로리',
       theme: AppTheme.light(),
       debugShowCheckedModeBanner: false,
       routerConfig: AppRouter.router,

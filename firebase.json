@@ -30,6 +30,16 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/etc/**",
+        "destination": "/etc/policy.html"
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
     ]
   },
   "storage": {
