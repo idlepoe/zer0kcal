@@ -7,9 +7,9 @@ part of 'comment.dart';
 // **************************************************************************
 
 _Comment _$CommentFromJson(Map<String, dynamic> json) => _Comment(
-  id: _stringFromJson(json['id']),
-  feed_id: _stringFromJson(json['feed_id']),
-  message: _stringFromJson(json['message']),
+  id: _toString(json['id']),
+  feed_id: _toString(json['feed_id']),
+  message: _toString(json['message']),
   created_at: _fromTimestamp(json['created_at']),
   updated_at: _fromTimestamp(json['updated_at']),
 );

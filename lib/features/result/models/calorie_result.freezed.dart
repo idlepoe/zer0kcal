@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CalorieResult {
 
-@JsonKey(fromJson: _stringFromJson) String get url;@JsonKey(fromJson: _stringFromJson) String get message;
+@JsonKey(fromJson: _toString) String get url;@JsonKey(fromJson: _toString) String get message;
 /// Create a copy of CalorieResult
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,7 +49,7 @@ abstract mixin class $CalorieResultCopyWith<$Res>  {
   factory $CalorieResultCopyWith(CalorieResult value, $Res Function(CalorieResult) _then) = _$CalorieResultCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(fromJson: _stringFromJson) String url,@JsonKey(fromJson: _stringFromJson) String message
+@JsonKey(fromJson: _toString) String url,@JsonKey(fromJson: _toString) String message
 });
 
 
@@ -81,11 +81,11 @@ as String,
 @JsonSerializable()
 
 class _CalorieResult implements CalorieResult {
-  const _CalorieResult({@JsonKey(fromJson: _stringFromJson) required this.url, @JsonKey(fromJson: _stringFromJson) required this.message});
+  const _CalorieResult({@JsonKey(fromJson: _toString) required this.url, @JsonKey(fromJson: _toString) required this.message});
   factory _CalorieResult.fromJson(Map<String, dynamic> json) => _$CalorieResultFromJson(json);
 
-@override@JsonKey(fromJson: _stringFromJson) final  String url;
-@override@JsonKey(fromJson: _stringFromJson) final  String message;
+@override@JsonKey(fromJson: _toString) final  String url;
+@override@JsonKey(fromJson: _toString) final  String message;
 
 /// Create a copy of CalorieResult
 /// with the given fields replaced by the non-null parameter values.
@@ -120,7 +120,7 @@ abstract mixin class _$CalorieResultCopyWith<$Res> implements $CalorieResultCopy
   factory _$CalorieResultCopyWith(_CalorieResult value, $Res Function(_CalorieResult) _then) = __$CalorieResultCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(fromJson: _stringFromJson) String url,@JsonKey(fromJson: _stringFromJson) String message
+@JsonKey(fromJson: _toString) String url,@JsonKey(fromJson: _toString) String message
 });
 
 
