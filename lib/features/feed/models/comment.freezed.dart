@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Comment {
 
-@JsonKey(fromJson: _toString) String get id;@JsonKey(fromJson: _toString) String get feed_id;@JsonKey(fromJson: _toString) String get message;@JsonKey(fromJson: _fromTimestamp) DateTime get created_at;@JsonKey(fromJson: _fromTimestamp) DateTime get updated_at;
+@JsonKey(fromJson: _stringFromJson) String get id;@JsonKey(fromJson: _stringFromJson) String get feed_id;@JsonKey(fromJson: _stringFromJson) String get message;@JsonKey(fromJson: _fromTimestamp) DateTime get created_at;@JsonKey(fromJson: _fromTimestamp) DateTime get updated_at;
 /// Create a copy of Comment
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,7 +49,7 @@ abstract mixin class $CommentCopyWith<$Res>  {
   factory $CommentCopyWith(Comment value, $Res Function(Comment) _then) = _$CommentCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(fromJson: _toString) String id,@JsonKey(fromJson: _toString) String feed_id,@JsonKey(fromJson: _toString) String message,@JsonKey(fromJson: _fromTimestamp) DateTime created_at,@JsonKey(fromJson: _fromTimestamp) DateTime updated_at
+@JsonKey(fromJson: _stringFromJson) String id,@JsonKey(fromJson: _stringFromJson) String feed_id,@JsonKey(fromJson: _stringFromJson) String message,@JsonKey(fromJson: _fromTimestamp) DateTime created_at,@JsonKey(fromJson: _fromTimestamp) DateTime updated_at
 });
 
 
@@ -84,12 +84,12 @@ as DateTime,
 @JsonSerializable()
 
 class _Comment implements Comment {
-  const _Comment({@JsonKey(fromJson: _toString) required this.id, @JsonKey(fromJson: _toString) required this.feed_id, @JsonKey(fromJson: _toString) required this.message, @JsonKey(fromJson: _fromTimestamp) required this.created_at, @JsonKey(fromJson: _fromTimestamp) required this.updated_at});
+  const _Comment({@JsonKey(fromJson: _stringFromJson) required this.id, @JsonKey(fromJson: _stringFromJson) required this.feed_id, @JsonKey(fromJson: _stringFromJson) required this.message, @JsonKey(fromJson: _fromTimestamp) required this.created_at, @JsonKey(fromJson: _fromTimestamp) required this.updated_at});
   factory _Comment.fromJson(Map<String, dynamic> json) => _$CommentFromJson(json);
 
-@override@JsonKey(fromJson: _toString) final  String id;
-@override@JsonKey(fromJson: _toString) final  String feed_id;
-@override@JsonKey(fromJson: _toString) final  String message;
+@override@JsonKey(fromJson: _stringFromJson) final  String id;
+@override@JsonKey(fromJson: _stringFromJson) final  String feed_id;
+@override@JsonKey(fromJson: _stringFromJson) final  String message;
 @override@JsonKey(fromJson: _fromTimestamp) final  DateTime created_at;
 @override@JsonKey(fromJson: _fromTimestamp) final  DateTime updated_at;
 
@@ -126,7 +126,7 @@ abstract mixin class _$CommentCopyWith<$Res> implements $CommentCopyWith<$Res> {
   factory _$CommentCopyWith(_Comment value, $Res Function(_Comment) _then) = __$CommentCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(fromJson: _toString) String id,@JsonKey(fromJson: _toString) String feed_id,@JsonKey(fromJson: _toString) String message,@JsonKey(fromJson: _fromTimestamp) DateTime created_at,@JsonKey(fromJson: _fromTimestamp) DateTime updated_at
+@JsonKey(fromJson: _stringFromJson) String id,@JsonKey(fromJson: _stringFromJson) String feed_id,@JsonKey(fromJson: _stringFromJson) String message,@JsonKey(fromJson: _fromTimestamp) DateTime created_at,@JsonKey(fromJson: _fromTimestamp) DateTime updated_at
 });
 
 

@@ -8,8 +8,8 @@ part of 'calorie_result.dart';
 
 _CalorieResult _$CalorieResultFromJson(Map<String, dynamic> json) =>
     _CalorieResult(
-      url: _toString(json['url']),
-      message: _toString(json['message']),
+      url: _stringFromJson(json['url']),
+      message: _stringFromJson(json['message']),
     );
 
 Map<String, dynamic> _$CalorieResultToJson(_CalorieResult instance) =>
