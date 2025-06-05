@@ -42,7 +42,6 @@
     - 🔧 Cloud Functions
     - 🏠 Hosting
 - [flutter_bloc](https://pub.dev/packages/flutter_bloc) – 상태관리
-- [Shorebird](https://pub.dev/packages/shorebird_code_push) – OTA 코드 푸시
 
 ---
 
