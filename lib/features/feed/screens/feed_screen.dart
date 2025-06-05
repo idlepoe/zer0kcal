@@ -61,39 +61,41 @@ class FeedScreen extends StatelessWidget {
           ],
           body: Column(
             children: [
-              SmartRefresher(
-                controller: _refreshController,
-                onRefresh: () {
-                  context.read<FeedBloc>().add(FeedFetch());
-                  _refreshController.refreshCompleted();
-                },
-                header: AppRefreshHeader(),
-                child:
-                    list.isEmpty
-                        ? NoDataMascote()
-                        : Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: AppColors.brightListBackColor,
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: StaggeredGrid.count(
-                              crossAxisCount: 2,
-                              mainAxisSpacing: 0,
-                              crossAxisSpacing: 0,
-                              children: buildStaggeredFeedTiles(
-                                list,
-                                onTap: (item) async {
-                                  logger.d("/detail/${item.id}");
-                                  var result = await context.push(
-                                    "/detail/${item.id}",
-                                  );
-                                },
+              Expanded(
+                child: SmartRefresher(
+                  controller: _refreshController,
+                  onRefresh: () {
+                    context.read<FeedBloc>().add(FeedFetch());
+                    _refreshController.refreshCompleted();
+                  },
+                  header: AppRefreshHeader(),
+                  child:
+                      list.isEmpty
+                          ? NoDataMascote()
+                          : Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: AppColors.brightListBackColor,
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: StaggeredGrid.count(
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 0,
+                                crossAxisSpacing: 0,
+                                children: buildStaggeredFeedTiles(
+                                  list,
+                                  onTap: (item) async {
+                                    logger.d("/detail/${item.id}");
+                                    var result = await context.push(
+                                      "/detail/${item.id}",
+                                    );
+                                  },
+                                ),
                               ),
                             ),
                           ),
-                        ),
+                ),
               ),
               if (!kIsWeb) ...[
                 AdFitBannerView(adUnitId: "DAN-JzkcCXfupKSHOCca"),
