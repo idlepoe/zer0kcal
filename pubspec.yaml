@@ -1,7 +1,7 @@
 name: zer0kcal
 description: "제로칼로리"
 publish_to: 'none'
-version: 1.0.2+3
+version: 1.0.3+4
 environment:
   sdk: ^3.7.0
 dependencies:
