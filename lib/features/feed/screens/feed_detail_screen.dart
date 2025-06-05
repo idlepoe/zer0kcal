@@ -4,6 +4,7 @@ import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:zer0kcal/core/widgets/app_button.dart';
 import 'package:zer0kcal/core/widgets/app_inkwell.dart';
 import 'package:zer0kcal/core/widgets/app_scaffold.dart';
@@ -119,9 +120,47 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                             child: Row(
                               children: [
                                 Expanded(
-                                  child: AppNetworkImage(
-                                    url: item.url,
-                                    fit: BoxFit.cover,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      showDialog(
+                                        context: context,
+                                        builder:
+                                            (_) => Dialog(
+                                              backgroundColor: Colors.black,
+                                              child: InteractiveViewer(
+                                                child: AppNetworkImage(
+                                                  url: item!.url,
+                                                  fit: BoxFit.contain,
+                                                ),
+                                              ),
+                                            ),
+                                      );
+                                    },
+                                    child: Stack(
+                                      children: [
+                                        AppNetworkImage(
+                                          url: item.url,
+                                          fit: BoxFit.cover,
+                                        ),
+                                        Positioned(
+                                          bottom: 8,
+                                          right: 8,
+                                          child: Container(
+                                            padding: EdgeInsets.all(4),
+                                            decoration: BoxDecoration(
+                                              color: Colors.black54,
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                            ),
+                                            child: Icon(
+                                              Icons.zoom_in,
+                                              color: Colors.white,
+                                              size: 20,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 SizedBox(width: 10),

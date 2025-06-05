@@ -1,4 +1,5 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -9,6 +10,7 @@ import 'package:zer0kcal/features/feed/bloc/feed_bloc.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/dio_interceptor.dart';
+import '../../../core/widgets/ad_fit_banner_view.dart';
 import '../../../core/widgets/app_scaffold.dart';
 import '../../../core/widgets/no_data.dart';
 import '../bloc/feed_event.dart';
@@ -57,39 +59,46 @@ class FeedScreen extends StatelessWidget {
               ),
             ),
           ],
-          body: SmartRefresher(
-            controller: _refreshController,
-            onRefresh: () {
-              context.read<FeedBloc>().add(FeedFetch());
-              _refreshController.refreshCompleted();
-            },
-            header: AppRefreshHeader(),
-            child:
-                list.isEmpty
-                    ? NoDataMascote()
-                    : Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.brightListBackColor,
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: StaggeredGrid.count(
-                          crossAxisCount: 2,
-                          mainAxisSpacing: 0,
-                          crossAxisSpacing: 0,
-                          children: buildStaggeredFeedTiles(
-                            list,
-                            onTap: (item) async {
-                              logger.d("/detail/${item.id}");
-                              var result = await context.push(
-                                "/detail/${item.id}",
-                              );
-                            },
+          body: Column(
+            children: [
+              SmartRefresher(
+                controller: _refreshController,
+                onRefresh: () {
+                  context.read<FeedBloc>().add(FeedFetch());
+                  _refreshController.refreshCompleted();
+                },
+                header: AppRefreshHeader(),
+                child:
+                    list.isEmpty
+                        ? NoDataMascote()
+                        : Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: AppColors.brightListBackColor,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: StaggeredGrid.count(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 0,
+                              crossAxisSpacing: 0,
+                              children: buildStaggeredFeedTiles(
+                                list,
+                                onTap: (item) async {
+                                  logger.d("/detail/${item.id}");
+                                  var result = await context.push(
+                                    "/detail/${item.id}",
+                                  );
+                                },
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
+              ),
+              if (!kIsWeb) ...[
+                AdFitBannerView(adUnitId: "DAN-JzkcCXfupKSHOCca"),
+              ],
+            ],
           ),
         );
       },

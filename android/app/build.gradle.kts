@@ -61,3 +61,8 @@ android {
 flutter {
     source = "../.."
 }
+
+dependencies {
+    implementation("com.kakao.adfit:ads-base:3.19.5")
+    implementation("androidx.appcompat:appcompat:1.7.0")
+}
