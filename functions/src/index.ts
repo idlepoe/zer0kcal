@@ -12,7 +12,10 @@ import FieldValue = firestore.FieldValue;
 initializeApp();
 setGlobalOptions({region: 'asia-northeast3'});
 
-exports.getFeedList = onRequest({cors: true}, async (request, response) => {
+exports.getFeedList = onRequest({
+    cors: true, memory: "1GiB",
+    region: "asia-northeast3",
+}, async (request, response) => {
     logger.info("getFeedList");
     try {
 
@@ -52,7 +55,10 @@ exports.getFeedList = onRequest({cors: true}, async (request, response) => {
     }
 });
 
-exports.getFeedDetail = onRequest({cors: true}, async (request, response) => {
+exports.getFeedDetail = onRequest({
+    cors: true, memory: "1GiB",
+    region: "asia-northeast3",
+}, async (request, response) => {
     logger.info("getFeedDetail");
     logger.log(request.body);
     try {
@@ -116,7 +122,10 @@ exports.getFeedDetail = onRequest({cors: true}, async (request, response) => {
     }
 });
 
-exports.writeFeed = onRequest({cors: true}, async (request, response) => {
+exports.writeFeed = onRequest({
+    cors: true, memory: "1GiB",
+    region: "asia-northeast3",
+}, async (request, response) => {
     logger.info("writeFeed");
     logger.log(request.body);
     try {
@@ -139,7 +148,10 @@ exports.writeFeed = onRequest({cors: true}, async (request, response) => {
     }
 });
 
-exports.writeComment = onRequest({cors: true}, async (request, response) => {
+exports.writeComment = onRequest({
+    cors: true, memory: "1GiB",
+    region: "asia-northeast3",
+}, async (request, response) => {
     logger.info("writeComment");
     logger.log(request.body);
     try {
@@ -173,7 +185,10 @@ exports.writeComment = onRequest({cors: true}, async (request, response) => {
     }
 });
 
-exports.countUpLike = onRequest({cors: true}, async (request, response) => {
+exports.countUpLike = onRequest({
+    cors: true, memory: "1GiB",
+    region: "asia-northeast3",
+}, async (request, response) => {
     logger.info("countUpLike");
     logger.log(request.body);
     try {

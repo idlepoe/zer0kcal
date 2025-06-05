@@ -21,12 +21,42 @@ import '../../../core/widgets/app_scaffold.dart';
 import '../bloc/result_state.dart';
 import '../bloc/result_bloc.dart';
 
-class ResultScreen extends StatelessWidget {
+class ResultScreen extends StatefulWidget {
   final CalorieResult calorieResult;
+  const ResultScreen({super.key, required this.calorieResult});
 
-  ResultScreen({super.key, required this.calorieResult});
+  @override
+  State<ResultScreen> createState() => _ResultScreenState();
+}
 
+class _ResultScreenState extends State<ResultScreen> {
   final ScreenshotController screenshotController = ScreenshotController();
+  bool isSharing = false;
+
+  Future<void> _handleShare() async {
+    setState(() => isSharing = true);
+
+    // 한 프레임 기다려서 UI 업데이트 반영
+    await Future.delayed(Duration(milliseconds: 100));
+
+    final captured = await screenshotController.capture();
+    if (captured == null) {
+      setState(() => isSharing = false);
+      throw Exception("스크린샷 실패");
+    }
+
+    final xFile = await AppUtils.uint8ListToXFile(captured);
+
+    setState(() => isSharing = false);
+
+    context.read<ResultBloc>().add(
+      ResultSharePressed(
+        xFile: xFile,
+        calorieResult: widget.calorieResult,
+      ),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +125,7 @@ class ResultScreen extends StatelessWidget {
                 Screenshot(
                   controller: screenshotController,
                   child: Container(
-                    color: isLoading ? AppColors.brandSubColor : null,
+                    color: isSharing ? Colors.white : null,
                     child: Column(
                       children: [
                         SizedBox(height: 50),
@@ -115,7 +145,7 @@ class ResultScreen extends StatelessWidget {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
                           ),
-                          child: AppNetworkImage(url: calorieResult.url),
+                          child: AppNetworkImage(url: widget.calorieResult.url),
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(
@@ -131,7 +161,7 @@ class ResultScreen extends StatelessWidget {
                               ),
                               Expanded(
                                 child: Text(
-                                  calorieResult.message,
+                                  widget.calorieResult.message,
                                   style: TextStyle(
                                     color: AppColors.textColor,
                                     fontSize: 15,
@@ -150,24 +180,14 @@ class ResultScreen extends StatelessWidget {
                   children: [
                     AppButton(
                       buttonText: "공유하기",
-                      onTap: () async {
-                        final captured = await screenshotController.capture();
-                        if (captured == null) throw Exception("스크린샷 실패");
-                        final xFile = await AppUtils.uint8ListToXFile(captured);
-                        context.read<ResultBloc>().add(
-                          ResultSharePressed(
-                            xFile: xFile,
-                            calorieResult: calorieResult,
-                          ),
-                        );
-                      },
+                      onTap: _handleShare,
                     ),
                     SizedBox(width: 10),
                     AppButton(
                       buttonText: "피드에 올리기",
                       onTap: () {
                         context.read<ResultBloc>().add(
-                          ResultUploadFeedPressed(calorieResult: calorieResult),
+                          ResultUploadFeedPressed(calorieResult: widget.calorieResult),
                         );
                       },
                     ),
@@ -175,7 +195,12 @@ class ResultScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 20),
                 AppInkWell(
-                  onTap: () {},
+                  onTap: () async {
+                    await Share.share(
+                      "제로칼로리 앱 추천해요! 🍊\n\n👉 https://play.google.com/store/apps/details?id=com.jylee.zer0kcal&hl=ko",
+                      subject: "제로칼로리 앱 공유",
+                    );
+                  },
                   child: Image.asset(
                     "assets/recommend_app_orange.png",
                     height: 150,

@@ -52,9 +52,12 @@ flutter:
       fonts:
         - asset: assets/fonts/BMEULJIROTTF.ttf
 flutter_launcher_icons:
-  android: "launcher_icon"
   ios: true
   min_sdk_android: 21 # android min sdk min:16, default 21
+  android: "launcher_icon"
+  image_path: "assets/icon/icon.png"
+  adaptive_icon_foreground: "assets/icon/icon.png"
+  adaptive_icon_background: "#FFFFFF"
   web:
     generate: true
     image_path: "assets/icon/icon.png"

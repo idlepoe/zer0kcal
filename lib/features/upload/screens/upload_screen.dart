@@ -106,43 +106,46 @@ class UploadScreen extends StatelessWidget {
                 },
               ),
             ),
-            if (isLoading || isAiLoading)
+            // if (true)
+              if (isLoading || isAiLoading)
               Positioned.fill(
                 child: Scaffold(
                   backgroundColor: Colors.white.withAlpha(175),
                   body: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          "assets/loading_orange.png",
-                          fit: BoxFit.fitWidth,
-                        ),
-                        SizedBox(height: 20),
-                        isLoading
-                            ? Column(
-                              children: [
-                                Text(
-                                  loadingMsg[Random().nextInt(
-                                    loadingMsg.length,
-                                  )],
-                                ),
-                              ],
-                            )
-                            : Column(
-                              children: [
-                                Text(
-                                  "${loadingMsg[Random().nextInt(loadingMsg.length)]}(완료)",
-                                ),
-                                Text(
-                                  aiLoadingMsg[Random().nextInt(
-                                    aiLoadingMsg.length,
-                                  )],
-                                ),
-                              ],
-                            ),
-                      ],
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            "assets/loading_orange.png",
+                            fit: BoxFit.fitWidth,
+                          ),
+                          SizedBox(height: 20),
+                          isLoading
+                              ? Column(
+                                children: [
+                                  Text(
+                                    loadingMsg[Random().nextInt(
+                                      loadingMsg.length,
+                                    )],
+                                  ),
+                                ],
+                              )
+                              : Column(
+                                children: [
+                                  Text(
+                                    "${loadingMsg[Random().nextInt(loadingMsg.length)]}(완료)",
+                                  ),
+                                  Text(
+                                    aiLoadingMsg[Random().nextInt(
+                                      aiLoadingMsg.length,
+                                    )],
+                                  ),
+                                ],
+                              ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
