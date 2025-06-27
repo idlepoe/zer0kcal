@@ -50,13 +50,9 @@ class _ResultScreenState extends State<ResultScreen> {
     setState(() => isSharing = false);
 
     context.read<ResultBloc>().add(
-      ResultSharePressed(
-        xFile: xFile,
-        calorieResult: widget.calorieResult,
-      ),
+      ResultSharePressed(xFile: xFile, calorieResult: widget.calorieResult),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +121,20 @@ class _ResultScreenState extends State<ResultScreen> {
                 Screenshot(
                   controller: screenshotController,
                   child: Container(
-                    color: isSharing ? Colors.white : null,
+                    decoration:
+                        isSharing
+                            ? BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  AppColors.brandColor,
+                                  AppColors.resultBackColor,
+                                  AppColors.brandColor,
+                                ],
+                              ),
+                            )
+                            : null,
                     child: Column(
                       children: [
                         SizedBox(height: 50),
@@ -136,6 +145,7 @@ class _ResultScreenState extends State<ResultScreen> {
                             style: TextStyle(
                               color: AppColors.textColor,
                               fontSize: 25,
+                              fontFamily: 'BMEULJIROTTF',
                             ),
                           ),
                         ),
@@ -165,12 +175,14 @@ class _ResultScreenState extends State<ResultScreen> {
                                   style: TextStyle(
                                     color: AppColors.textColor,
                                     fontSize: 15,
+                                    fontFamily: 'BMEULJIROTTF',
                                   ),
                                 ),
                               ),
                             ],
                           ),
                         ),
+                        SizedBox(height: 20),
                       ],
                     ),
                   ),
@@ -178,16 +190,15 @@ class _ResultScreenState extends State<ResultScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    AppButton(
-                      buttonText: "공유하기",
-                      onTap: _handleShare,
-                    ),
+                    AppButton(buttonText: "공유하기", onTap: _handleShare),
                     SizedBox(width: 10),
                     AppButton(
                       buttonText: "피드에 올리기",
                       onTap: () {
                         context.read<ResultBloc>().add(
-                          ResultUploadFeedPressed(calorieResult: widget.calorieResult),
+                          ResultUploadFeedPressed(
+                            calorieResult: widget.calorieResult,
+                          ),
                         );
                       },
                     ),

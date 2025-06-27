@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zer0kcal/core/widgets/app_button.dart';
 import 'package:zer0kcal/core/widgets/app_inkwell.dart';
 import 'package:zer0kcal/core/widgets/app_scaffold.dart';
@@ -31,8 +32,15 @@ class FeedDetailScreen extends StatefulWidget {
   State<FeedDetailScreen> createState() => _FeedDetailScreenState();
 }
 
-class _FeedDetailScreenState extends State<FeedDetailScreen> {
+class _FeedDetailScreenState extends State<FeedDetailScreen>
+    with TickerProviderStateMixin {
   TextEditingController _tecComment = TextEditingController();
+  bool _hasLiked = false;
+
+  late AnimationController _likeAnimationController;
+  late Animation<double> _likeScaleAnimation;
+  late Animation<double> _likeOpacityAnimation;
+
   final List<String> successMsg = [
     "어머, 이건 제로칼로리야!",
     "기분 좋게 먹으면 칼로리는 0이지~",
@@ -62,9 +70,70 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+
+    _likeAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    );
+
+    _likeScaleAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _likeAnimationController,
+        curve: Curves.easeInOut,
+      ),
+    );
+
+    _likeOpacityAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _likeAnimationController,
+        curve: Curves.easeInOut,
+      ),
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       context.read<FeedDetailBloc>().add(FeedDetailFetch(feedID: widget.id));
+      _hasLiked = await context.read<FeedDetailBloc>().checkIfAlreadyLiked(
+        widget.id,
+      );
+      setState(() {});
     });
+  }
+
+  @override
+  void dispose() {
+    _likeAnimationController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleLike(String feedId) async {
+    context.read<FeedDetailBloc>().add(FeedLikePressed(feedID: feedId));
+  }
+
+  Future<void> _handleComment(Feed item) async {
+    final List<String> _commentMsg = [
+      "귤이가 댓글 기다리고 있어요 🍊",
+      "제로 칼로리 감성 한 줄만 써주세요!",
+      "앗, 댓글이 비었어요! 살짝 눌러 담아봐요 :)",
+      "마음속 한마디라도 남겨주시면 제로 칼로리!",
+      "너무 맛있어서 말문이 막혔나요? 한 글자라도 좋아요!",
+      "이 맛을 표현하고 싶은 마음... 놓치지 마세요!",
+      "댓글 없이 제출은 아쉬워요~ 🍽️",
+      "댓글은 사랑입니다. 한 줄 부탁해요!",
+      "응원, 감상, 감탄 다 좋아요! 지금 바로 입력!",
+    ];
+
+    if (_tecComment.text.isEmpty) {
+      showOkAlertDialog(
+        context: context,
+        message: _commentMsg[Random().nextInt(_commentMsg.length)],
+      );
+      return;
+    }
+
+    Comment param = Comment.fromJson({});
+    param = param.copyWith(feed_id: item.id, message: _tecComment.text);
+
+    context.read<FeedDetailBloc>().add(FeedCommentPressed(comment: param));
   }
 
   @override
@@ -73,20 +142,40 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
       listener: (context, FeedState state) {
         if (state is FeedDetailFetchSuccess) {
           _tecComment.clear();
+        } else if (state is FeedLikeAnimating) {
+          // 애니메이션 시작
+          _likeAnimationController.forward().then((_) {
+            setState(() {
+              _hasLiked = true;
+            });
+            context.read<FeedDetailBloc>().add(
+              FeedLikeCompleted(feedID: state.feedID),
+            );
+          });
         }
       },
       builder: (context, FeedState state) {
-        bool _isLoading = false;
+        bool _isMainLoading = false;
+        bool _isLikeLoading = false;
+        bool _isCommentLoading = false;
         Feed? item = null;
+
         if (state is FeedFailure) {
-          // _refreshController.refreshCompleted();
-        }
-        if (state is FeedDetailFetchSuccess) {
+          // Handle failure
+        } else if (state is FeedDetailFetchSuccess) {
+          item = state.result;
+        } else if (state is FeedLoading) {
+          _isMainLoading = true;
+        } else if (state is FeedLikeLoading) {
+          item = state.result;
+          _isLikeLoading = true;
+        } else if (state is FeedCommentLoading) {
+          item = state.result;
+          _isCommentLoading = true;
+        } else if (state is FeedLikeAnimating) {
           item = state.result;
         }
-        if (state is FeedLoading) {
-          _isLoading = true;
-        }
+
         return AppScaffold(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -97,7 +186,7 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
             ],
           ),
           body:
-              _isLoading
+              _isMainLoading
                   ? Center(
                     child: Container(
                       height: 30,
@@ -243,15 +332,53 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                             ],
                           ),
                           SizedBox(height: 20),
-                          AppButton(
-                            buttonText:
-                                _likeMsg[Random().nextInt(_likeMsg.length)],
-                            onTap: () {
-                              context.read<FeedDetailBloc>().add(
-                                FeedLikePressed(feedID: item!.id),
-                              );
-                            },
-                          ),
+                          if (!_hasLiked)
+                            AnimatedBuilder(
+                              animation: _likeAnimationController,
+                              builder: (context, child) {
+                                return Transform.scale(
+                                  scale: _likeScaleAnimation.value,
+                                  child: Opacity(
+                                    opacity: _likeOpacityAnimation.value,
+                                    child: Stack(
+                                      children: [
+                                        AppButton(
+                                          buttonText:
+                                              _isLikeLoading
+                                                  ? "좋아요 처리중..."
+                                                  : _likeMsg[Random().nextInt(
+                                                    _likeMsg.length,
+                                                  )],
+                                          onTap:
+                                              _isLikeLoading
+                                                  ? () {}
+                                                  : () => _handleLike(item!.id),
+                                        ),
+                                        if (_isLikeLoading)
+                                          Positioned.fill(
+                                            child: Center(
+                                              child: Container(
+                                                width: 20,
+                                                height: 20,
+                                                margin: EdgeInsets.only(
+                                                  right: 8,
+                                                ),
+                                                child: CircularProgressIndicator(
+                                                  strokeWidth: 2,
+                                                  valueColor:
+                                                      AlwaysStoppedAnimation<
+                                                        Color
+                                                      >(Colors.white),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
                           SizedBox(height: 20),
                           Text(
                             "댓글",
@@ -298,23 +425,25 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                       horizontal: 20,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: Color(0xFFFDEECF), // 배경색
+                                      color: Color(0xFFFDEECF),
                                       borderRadius: BorderRadius.circular(20),
                                     ),
                                     child: Center(
                                       child: TextField(
                                         controller: _tecComment,
+                                        enabled: !_isCommentLoading,
                                         style: TextStyle(
-                                          color: Color(0xFF8A6F4D), // 글자색 (예상)
+                                          color: Color(0xFF8A6F4D),
                                           fontSize: 18,
                                         ),
                                         decoration: InputDecoration(
                                           border: InputBorder.none,
-                                          hintText: '댓글을 입력하세요',
+                                          hintText:
+                                              _isCommentLoading
+                                                  ? '댓글을 등록하는 중...'
+                                                  : '댓글을 입력하세요',
                                           hintStyle: TextStyle(
-                                            color: Color(
-                                              0xFFB29A7D,
-                                            ), // 힌트색 (예상)
+                                            color: Color(0xFFB29A7D),
                                           ),
                                         ),
                                       ),
@@ -323,56 +452,43 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                 ),
                                 SizedBox(width: 10),
                                 AppInkWell(
-                                  onTap: () {
-                                    final List<String> _commentMsg = [
-                                      "귤이가 댓글 기다리고 있어요 🍊",
-                                      "제로 칼로리 감성 한 줄만 써주세요!",
-                                      "앗, 댓글이 비었어요! 살짝 눌러 담아봐요 :)",
-                                      "마음속 한마디라도 남겨주시면 제로 칼로리!",
-                                      "너무 맛있어서 말문이 막혔나요? 한 글자라도 좋아요!",
-                                      "이 맛을 표현하고 싶은 마음... 놓치지 마세요!",
-                                      "댓글 없이 제출은 아쉬워요~ 🍽️",
-                                      "댓글은 사랑입니다. 한 줄 부탁해요!",
-                                      "응원, 감상, 감탄 다 좋아요! 지금 바로 입력!",
-                                    ];
-
-                                    if (_tecComment.text.isEmpty) {
-                                      showOkAlertDialog(
-                                        context: context,
-                                        message:
-                                            _commentMsg[Random().nextInt(
-                                              _commentMsg.length,
-                                            )],
-                                      );
-                                      return;
-                                    }
-                                    Comment param = Comment.fromJson({});
-                                    param = param.copyWith(
-                                      feed_id: item!.id,
-                                      message: _tecComment.text,
-                                    );
-
-                                    context.read<FeedDetailBloc>().add(
-                                      FeedCommentPressed(comment: param),
-                                    );
-                                  },
+                                  onTap:
+                                      _isCommentLoading
+                                          ? null
+                                          : () => _handleComment(item!),
                                   child: Container(
                                     height: 60,
                                     padding: EdgeInsets.symmetric(
                                       horizontal: 20,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: Color(0xFFE76B1C), // 주황색 버튼
+                                      color:
+                                          _isCommentLoading
+                                              ? Color(0xFFB29A7D)
+                                              : Color(0xFFE76B1C),
                                       borderRadius: BorderRadius.circular(16),
                                     ),
                                     child: Center(
-                                      child: Text(
-                                        '제출',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                        ),
-                                      ),
+                                      child:
+                                          _isCommentLoading
+                                              ? SizedBox(
+                                                width: 20,
+                                                height: 20,
+                                                child: CircularProgressIndicator(
+                                                  strokeWidth: 2,
+                                                  valueColor:
+                                                      AlwaysStoppedAnimation<
+                                                        Color
+                                                      >(Colors.white),
+                                                ),
+                                              )
+                                              : Text(
+                                                '제출',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 18,
+                                                ),
+                                              ),
                                     ),
                                   ),
                                 ),

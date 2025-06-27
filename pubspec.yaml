@@ -33,6 +33,7 @@ dependencies:
   rename_app: ^1.6.2
   flutter_web_frame: ^1.0.0
   photo_view: ^0.15.0
+  shared_preferences: ^2.2.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
