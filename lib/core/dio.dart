@@ -9,4 +9,4 @@ final Dio dio = Dio(
     connectTimeout: const Duration(seconds: 10),
     receiveTimeout: const Duration(seconds: 10),
   ),
-)..interceptors.add(AppInterceptor());
+)..interceptors.add(DioInterceptor());

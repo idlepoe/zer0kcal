@@ -9,6 +9,7 @@ import 'package:zer0kcal/features/upload/bloc/upload_bloc.dart';
 import 'package:zer0kcal/repositories/feed_repository_impl.dart';
 
 import '../core/dio_interceptor.dart';
+import '../core/logger.dart';
 import '../data_provider/firestore_provider.dart';
 import '../features/feed/bloc/feed_detail_bloc.dart';
 import '../features/feed/screens/feed_detail_screen.dart';
@@ -18,7 +19,10 @@ import '../features/splash/screens/splash_screen.dart';
 import '../features/upload/screens/upload_screen.dart';
 
 class AppRouter {
+  static final navigatorKey = GlobalKey<NavigatorState>();
+
   static final router = GoRouter(
+    navigatorKey: navigatorKey,
     initialLocation: '/',
     routes: [
       GoRoute(path: '/', builder: (context, state) => const SplashScreen()),

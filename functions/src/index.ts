@@ -8,9 +8,30 @@ import {Feed} from "./models/feed";
 import {Comments} from "./models/comments";
 import {firestore} from "firebase-admin";
 import FieldValue = firestore.FieldValue;
+import * as admin from "firebase-admin";
+import * as functions from "firebase-functions";
 
 initializeApp();
 setGlobalOptions({region: 'asia-northeast3'});
+
+export async function verifyAuth(req: any): Promise<admin.auth.DecodedIdToken> {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    throw new functions.https.HttpsError("unauthenticated",
+      "Authorization header missing");
+  }
+
+  const idToken = authHeader.split("Bearer ")[1];
+
+  try {
+    const decoded = await admin.auth().verifyIdToken(idToken);
+    return decoded;
+  } catch (error) {
+    throw new functions.https.HttpsError("unauthenticated",
+      "Invalid Firebase ID token");
+  }
+}
 
 exports.getFeedList = onRequest({
     cors: true, memory: "1GiB",
@@ -18,6 +39,11 @@ exports.getFeedList = onRequest({
 }, async (request, response) => {
     logger.info("getFeedList");
     try {
+        // 토큰 검증
+        const decodedToken = await verifyAuth(request);
+        
+        // 검증된 사용자 ID 사용
+        const userId = decodedToken.uid;
 
         const result: Feed[] = [];
 
@@ -46,9 +72,8 @@ exports.getFeedList = onRequest({
         response.status(200).json({result: result});
         return;
     } catch (e) {
-        if (e instanceof Error) {
-            console.error(e.message);
-            response.status(500).json({result: e.message});
+        if (e instanceof functions.https.HttpsError) {
+            response.status(401).json({ error: e.message });
         } else {
             response.status(500).json({result: e});
         }
@@ -62,6 +87,11 @@ exports.getFeedDetail = onRequest({
     logger.info("getFeedDetail");
     logger.log(request.body);
     try {
+        // 토큰 검증
+        const decodedToken = await verifyAuth(request);
+        
+        // 검증된 사용자 ID 사용
+        const userId = decodedToken.uid;
 
         const feedID = request.body.feed_id;
         logger.log(feedID);
@@ -113,9 +143,8 @@ exports.getFeedDetail = onRequest({
         response.status(200).json({result: targetFeed});
         return;
     } catch (e) {
-        if (e instanceof Error) {
-            console.error(e.message);
-            response.status(500).json({result: e.message});
+        if (e instanceof functions.https.HttpsError) {
+            response.status(401).json({ error: e.message });
         } else {
             response.status(500).json({result: e});
         }
@@ -129,6 +158,12 @@ exports.writeFeed = onRequest({
     logger.info("writeFeed");
     logger.log(request.body);
     try {
+        // 토큰 검증
+        const decodedToken = await verifyAuth(request);
+        
+        // 검증된 사용자 ID 사용
+        const userId = decodedToken.uid;
+
         const writeResult = await getFirestore()
             .collection("feed")
             .add({
@@ -139,9 +174,8 @@ exports.writeFeed = onRequest({
         response.status(200).json({result: `feed ${writeResult.id} created`});
         return;
     } catch (e) {
-        if (e instanceof Error) {
-            console.error(e.message);
-            response.status(500).json({result: e.message});
+        if (e instanceof functions.https.HttpsError) {
+            response.status(401).json({ error: e.message });
         } else {
             response.status(500).json({result: e});
         }
@@ -155,6 +189,12 @@ exports.writeComment = onRequest({
     logger.info("writeComment");
     logger.log(request.body);
     try {
+        // 토큰 검증
+        const decodedToken = await verifyAuth(request);
+        
+        // 검증된 사용자 ID 사용
+        const userId = decodedToken.uid;
+
         const targetFeedID = request.body.feed_id;
 
         const writeResult = await getFirestore()
@@ -176,9 +216,8 @@ exports.writeComment = onRequest({
         response.status(200).json({result: `feed ${writeResult.id} created`});
         return;
     } catch (e) {
-        if (e instanceof Error) {
-            console.error(e.message);
-            response.status(500).json({result: e.message});
+        if (e instanceof functions.https.HttpsError) {
+            response.status(401).json({ error: e.message });
         } else {
             response.status(500).json({result: e});
         }
@@ -192,6 +231,12 @@ exports.countUpLike = onRequest({
     logger.info("countUpLike");
     logger.log(request.body);
     try {
+        // 토큰 검증
+        const decodedToken = await verifyAuth(request);
+        
+        // 검증된 사용자 ID 사용
+        const userId = decodedToken.uid;
+
         const targetFeedID = request.body.feed_id;
 
         const commentUpTarget = getFirestore()
@@ -204,9 +249,8 @@ exports.countUpLike = onRequest({
         response.status(200).json({result: `countUpLike success`});
         return;
     } catch (e) {
-        if (e instanceof Error) {
-            console.error(e.message);
-            response.status(500).json({result: e.message});
+        if (e instanceof functions.https.HttpsError) {
+            response.status(401).json({ error: e.message });
         } else {
             response.status(500).json({result: e});
         }
