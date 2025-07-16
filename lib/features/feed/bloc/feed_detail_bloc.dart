@@ -25,6 +25,31 @@ class FeedDetailBloc extends Bloc<FeedEvent, FeedState> {
       }
     });
 
+    on<FeedDetailFetchWithInitial>((event, emit) async {
+      try {
+        // initialData를 우선 표시
+        _cache = event.initialData;
+        emit(
+          FeedDetailWithInitial(result: event.initialData, isRefreshing: true),
+        );
+        logger.d('초기 데이터로 피드 상세를 표시합니다. (ID: ${event.feedID})');
+
+        // 백그라운드에서 댓글이 포함된 상세 데이터 가져오기
+        Feed detailedPosts = await repository.getFeedDetail(
+          feedID: event.feedID,
+        );
+        _cache = detailedPosts;
+        logger.d('댓글이 포함된 상세 데이터를 가져왔습니다. (ID: ${event.feedID})');
+
+        // 최신 데이터로 화면 갱신
+        emit(FeedDetailFetchSuccess(result: detailedPosts));
+      } catch (e) {
+        // 에러 발생 시 initialData를 계속 사용
+        logger.w('상세 데이터 가져오기 실패로 초기 데이터를 사용합니다: $e');
+        emit(FeedDetailFetchSuccess(result: _cache));
+      }
+    });
+
     on<FeedLikeLoadingStarted>((event, emit) async {
       emit(FeedLikeLoading(result: _cache));
     });

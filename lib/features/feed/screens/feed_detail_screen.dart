@@ -25,8 +25,13 @@ import '../models/feed.dart';
 
 class FeedDetailScreen extends StatefulWidget {
   final String id;
+  final Feed? initialData; // 초기 데이터 추가
 
-  const FeedDetailScreen({super.key, required this.id});
+  const FeedDetailScreen({
+    super.key,
+    required this.id,
+    this.initialData, // 초기 데이터 매개변수
+  });
 
   @override
   State<FeedDetailScreen> createState() => _FeedDetailScreenState();
@@ -91,7 +96,19 @@ class _FeedDetailScreenState extends State<FeedDetailScreen>
     );
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      context.read<FeedDetailBloc>().add(FeedDetailFetch(feedID: widget.id));
+      // initialData가 있으면 우선 표시하고, 백그라운드에서 상세 데이터 가져오기
+      if (widget.initialData != null) {
+        context.read<FeedDetailBloc>().add(
+          FeedDetailFetchWithInitial(
+            feedID: widget.id,
+            initialData: widget.initialData!,
+          ),
+        );
+      } else {
+        // initialData가 없으면 기존 방식으로 로딩
+        context.read<FeedDetailBloc>().add(FeedDetailFetch(feedID: widget.id));
+      }
+
       _hasLiked = await context.read<FeedDetailBloc>().checkIfAlreadyLiked(
         widget.id,
       );
@@ -158,12 +175,16 @@ class _FeedDetailScreenState extends State<FeedDetailScreen>
         bool _isMainLoading = false;
         bool _isLikeLoading = false;
         bool _isCommentLoading = false;
+        bool _isRefreshing = false;
         Feed? item = null;
 
         if (state is FeedFailure) {
           // Handle failure
         } else if (state is FeedDetailFetchSuccess) {
           item = state.result;
+        } else if (state is FeedDetailWithInitial) {
+          item = state.result;
+          _isRefreshing = state.isRefreshing;
         } else if (state is FeedLoading) {
           _isMainLoading = true;
         } else if (state is FeedLikeLoading) {
@@ -199,305 +220,352 @@ class _FeedDetailScreenState extends State<FeedDetailScreen>
                   )
                   : item == null
                   ? NoDataMascote(msg: "해당 피드를 찾을 수 없습니다.")
-                  : SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          IntrinsicHeight(
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      showDialog(
-                                        context: context,
-                                        builder:
-                                            (_) => Dialog(
-                                              backgroundColor: Colors.black,
-                                              child: InteractiveViewer(
-                                                child: AppNetworkImage(
-                                                  url: item!.url,
-                                                  fit: BoxFit.contain,
+                  : Stack(
+                    children: [
+                      SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              IntrinsicHeight(
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          showDialog(
+                                            context: context,
+                                            builder:
+                                                (_) => Dialog(
+                                                  backgroundColor: Colors.black,
+                                                  child: InteractiveViewer(
+                                                    child: AppNetworkImage(
+                                                      url: item!.url,
+                                                      fit: BoxFit.contain,
+                                                    ),
+                                                  ),
+                                                ),
+                                          );
+                                        },
+                                        child: Stack(
+                                          children: [
+                                            AppNetworkImage(
+                                              url: item.url,
+                                              fit: BoxFit.cover,
+                                            ),
+                                            Positioned(
+                                              bottom: 8,
+                                              right: 8,
+                                              child: Container(
+                                                padding: EdgeInsets.all(4),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.black54,
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                ),
+                                                child: Icon(
+                                                  Icons.zoom_in,
+                                                  color: Colors.white,
+                                                  size: 20,
                                                 ),
                                               ),
                                             ),
-                                      );
-                                    },
-                                    child: Stack(
-                                      children: [
-                                        AppNetworkImage(
-                                          url: item.url,
-                                          fit: BoxFit.cover,
-                                        ),
-                                        Positioned(
-                                          bottom: 8,
-                                          right: 8,
-                                          child: Container(
-                                            padding: EdgeInsets.all(4),
-                                            decoration: BoxDecoration(
-                                              color: Colors.black54,
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                            ),
-                                            child: Icon(
-                                              Icons.zoom_in,
-                                              color: Colors.white,
-                                              size: 20,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                Expanded(
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      Text(
-                                        successMsg[Random().nextInt(
-                                          successMsg.length,
-                                        )],
-                                        style: TextStyle(
-                                          color: AppColors.textColor,
-                                          fontSize: 25,
+                                          ],
                                         ),
                                       ),
-                                      Row(
+                                    ),
+                                    SizedBox(width: 10),
+                                    Expanded(
+                                      child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceAround,
                                         children: [
-                                          Image.asset(
-                                            "assets/ic_heart.png",
-                                            height: 20,
-                                            fit: BoxFit.fitHeight,
-                                          ),
                                           Text(
-                                            item.cnt_like.toString(),
+                                            successMsg[Random().nextInt(
+                                              successMsg.length,
+                                            )],
                                             style: TextStyle(
                                               color: AppColors.textColor,
+                                              fontSize: 25,
                                             ),
                                           ),
-                                          SizedBox(width: 5),
-                                          Image.asset(
-                                            "assets/ic_comment.png",
-                                            height: 20,
-                                            fit: BoxFit.fitHeight,
-                                          ),
-                                          Text(
-                                            item.cnt_comment.toString(),
-                                            style: TextStyle(
-                                              color: AppColors.textColor,
-                                            ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
+                                            children: [
+                                              Image.asset(
+                                                "assets/ic_heart.png",
+                                                height: 20,
+                                                fit: BoxFit.fitHeight,
+                                              ),
+                                              Text(
+                                                item.cnt_like.toString(),
+                                                style: TextStyle(
+                                                  color: AppColors.textColor,
+                                                ),
+                                              ),
+                                              SizedBox(width: 5),
+                                              Image.asset(
+                                                "assets/ic_comment.png",
+                                                height: 20,
+                                                fit: BoxFit.fitHeight,
+                                              ),
+                                              Text(
+                                                item.cnt_comment.toString(),
+                                                style: TextStyle(
+                                                  color: AppColors.textColor,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 5),
-                          Text(
-                            AppUtils.timeAgo(item.updated_at),
-                            style: TextStyle(
-                              color: AppColors.textColor,
-                              fontSize: 18,
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Image.asset(
-                                "assets/ic_detail.png",
-                                height: 120,
-                                fit: BoxFit.fitHeight,
-                              ),
-                              SizedBox(width: 10),
-                              Expanded(
-                                child: Text(
-                                  item.message,
-                                  style: TextStyle(
-                                    color: AppColors.textColor,
-                                    fontSize: 15,
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
-                          SizedBox(height: 20),
-                          if (!_hasLiked)
-                            AnimatedBuilder(
-                              animation: _likeAnimationController,
-                              builder: (context, child) {
-                                return Transform.scale(
-                                  scale: _likeScaleAnimation.value,
-                                  child: Opacity(
-                                    opacity: _likeOpacityAnimation.value,
-                                    child: Stack(
-                                      children: [
-                                        AppButton(
-                                          buttonText:
-                                              _isLikeLoading
-                                                  ? "좋아요 처리중..."
-                                                  : _likeMsg[Random().nextInt(
-                                                    _likeMsg.length,
-                                                  )],
-                                          onTap:
-                                              _isLikeLoading
-                                                  ? () {}
-                                                  : () => _handleLike(item!.id),
-                                        ),
-                                        if (_isLikeLoading)
-                                          Positioned.fill(
-                                            child: Center(
-                                              child: Container(
-                                                width: 20,
-                                                height: 20,
-                                                margin: EdgeInsets.only(
-                                                  right: 8,
-                                                ),
-                                                child: CircularProgressIndicator(
-                                                  strokeWidth: 2,
-                                                  valueColor:
-                                                      AlwaysStoppedAnimation<
-                                                        Color
-                                                      >(Colors.white),
+                              SizedBox(height: 5),
+                              Text(
+                                AppUtils.timeAgo(item.updated_at),
+                                style: TextStyle(
+                                  color: AppColors.textColor,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Image.asset(
+                                    "assets/ic_detail.png",
+                                    height: 120,
+                                    fit: BoxFit.fitHeight,
+                                  ),
+                                  SizedBox(width: 10),
+                                  Expanded(
+                                    child: Text(
+                                      item.message,
+                                      style: TextStyle(
+                                        color: AppColors.textColor,
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 20),
+                              if (!_hasLiked)
+                                AnimatedBuilder(
+                                  animation: _likeAnimationController,
+                                  builder: (context, child) {
+                                    return Transform.scale(
+                                      scale: _likeScaleAnimation.value,
+                                      child: Opacity(
+                                        opacity: _likeOpacityAnimation.value,
+                                        child: Stack(
+                                          children: [
+                                            AppButton(
+                                              buttonText:
+                                                  _isLikeLoading
+                                                      ? "좋아요 처리중..."
+                                                      : _likeMsg[Random()
+                                                          .nextInt(
+                                                            _likeMsg.length,
+                                                          )],
+                                              onTap:
+                                                  _isLikeLoading
+                                                      ? () {}
+                                                      : () =>
+                                                          _handleLike(item!.id),
+                                            ),
+                                            if (_isLikeLoading)
+                                              Positioned.fill(
+                                                child: Center(
+                                                  child: Container(
+                                                    width: 20,
+                                                    height: 20,
+                                                    margin: EdgeInsets.only(
+                                                      right: 8,
+                                                    ),
+                                                    child: CircularProgressIndicator(
+                                                      strokeWidth: 2,
+                                                      valueColor:
+                                                          AlwaysStoppedAnimation<
+                                                            Color
+                                                          >(Colors.white),
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          SizedBox(height: 20),
-                          Text(
-                            "댓글",
-                            style: TextStyle(
-                              color: AppColors.textColor,
-                              fontSize: 25,
-                            ),
-                          ),
-                          Column(
-                            children: List.generate(
-                              item.comments.length,
-                              (index) => ListTile(
-                                leading: Image.asset(
-                                  index % 2 == 0
-                                      ? "assets/ic_orange2.png"
-                                      : "assets/ic_orange1.png",
-                                  height: 30,
-                                  fit: BoxFit.fitHeight,
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
-                                title: Text(
-                                  item!.comments[index].message,
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    color: AppColors.textColor,
-                                  ),
-                                ),
-                                subtitle: Text(
-                                  AppUtils.timeAgo(
-                                    item!.comments[index].updated_at,
-                                  ),
-                                  style: TextStyle(color: AppColors.textColor),
+                              SizedBox(height: 20),
+                              Text(
+                                "댓글",
+                                style: TextStyle(
+                                  color: AppColors.textColor,
+                                  fontSize: 25,
                                 ),
                               ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(10),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                    height: 60,
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 20,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Color(0xFFFDEECF),
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    child: Center(
-                                      child: TextField(
-                                        controller: _tecComment,
-                                        enabled: !_isCommentLoading,
+                              if (item?.comments != null &&
+                                  item!.comments!.isNotEmpty)
+                                Column(
+                                  children: List.generate(
+                                    item.comments?.length ?? 0,
+                                    (index) => ListTile(
+                                      leading: Image.asset(
+                                        index % 2 == 0
+                                            ? "assets/ic_orange2.png"
+                                            : "assets/ic_orange1.png",
+                                        height: 30,
+                                        fit: BoxFit.fitHeight,
+                                      ),
+                                      title: Text(
+                                        item!.comments[index].message ?? '',
                                         style: TextStyle(
-                                          color: Color(0xFF8A6F4D),
-                                          fontSize: 18,
+                                          color: AppColors.textColor,
+                                          fontSize: 15,
                                         ),
-                                        decoration: InputDecoration(
-                                          border: InputBorder.none,
-                                          hintText:
-                                              _isCommentLoading
-                                                  ? '댓글을 등록하는 중...'
-                                                  : '댓글을 입력하세요',
-                                          hintStyle: TextStyle(
-                                            color: Color(0xFFB29A7D),
-                                          ),
+                                      ),
+                                      subtitle: Text(
+                                        AppUtils.timeAgo(
+                                          item!.comments![index].created_at ??
+                                              DateTime.now(),
+                                        ),
+                                        style: TextStyle(
+                                          color: AppColors.textColor
+                                              .withOpacity(0.7),
+                                          fontSize: 12,
                                         ),
                                       ),
                                     ),
                                   ),
                                 ),
-                                SizedBox(width: 10),
-                                AppInkWell(
-                                  onTap:
-                                      _isCommentLoading
-                                          ? null
-                                          : () => _handleComment(item!),
-                                  child: Container(
-                                    height: 60,
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 20,
+                              SizedBox(height: 20),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: TextField(
+                                      controller: _tecComment,
+                                      style: TextStyle(
+                                        color: AppColors.textColor,
+                                        fontSize: 15,
+                                      ),
+                                      decoration: InputDecoration(
+                                        hintText: "댓글을 입력하세요...",
+                                        hintStyle: TextStyle(
+                                          color: AppColors.textColor
+                                              .withOpacity(0.5),
+                                          fontSize: 15,
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                          borderSide: BorderSide(
+                                            color: AppColors.textColor
+                                                .withOpacity(0.3),
+                                          ),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                          borderSide: BorderSide(
+                                            color: AppColors.textColor
+                                                .withOpacity(0.3),
+                                          ),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                          borderSide: BorderSide(
+                                            color: AppColors.textColor,
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                    decoration: BoxDecoration(
-                                      color:
-                                          _isCommentLoading
-                                              ? Color(0xFFB29A7D)
-                                              : Color(0xFFE76B1C),
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                    child: Center(
-                                      child:
-                                          _isCommentLoading
-                                              ? SizedBox(
-                                                width: 20,
-                                                height: 20,
-                                                child: CircularProgressIndicator(
-                                                  strokeWidth: 2,
-                                                  valueColor:
-                                                      AlwaysStoppedAnimation<
-                                                        Color
-                                                      >(Colors.white),
-                                                ),
-                                              )
-                                              : Text(
-                                                '제출',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 18,
-                                                ),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Stack(
+                                    children: [
+                                      AppButton(
+                                        buttonText:
+                                            _isCommentLoading ? "제출중..." : "제출",
+                                        onTap:
+                                            _isCommentLoading
+                                                ? () {}
+                                                : () => _handleComment(item!),
+                                      ),
+                                      if (_isCommentLoading)
+                                        Positioned.fill(
+                                          child: Center(
+                                            child: Container(
+                                              width: 20,
+                                              height: 20,
+                                              margin: EdgeInsets.only(right: 8),
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                                valueColor:
+                                                    AlwaysStoppedAnimation<
+                                                      Color
+                                                    >(Colors.white),
                                               ),
-                                    ),
+                                            ),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 20),
+                            ],
+                          ),
+                        ),
+                      ),
+                      // 백그라운드 로딩 표시
+                      if (_isRefreshing)
+                        Positioned(
+                          top: 20,
+                          right: 20,
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.black54,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  '댓글 로딩 중...',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: 'BMEULJIROTTF',
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                        ],
-                      ),
-                    ),
+                        ),
+                    ],
                   ),
         );
       },

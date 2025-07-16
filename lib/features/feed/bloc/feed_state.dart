@@ -13,6 +13,14 @@ class FeedInitial extends FeedState {}
 
 class FeedLoading extends FeedState {}
 
+class FeedCacheLoading extends FeedState implements HasFeedList {
+  @override
+  List<Feed> result;
+  bool isRefreshing;
+
+  FeedCacheLoading({required this.result, this.isRefreshing = false});
+}
+
 class FeedLikeLoading extends FeedState {
   Feed result;
   FeedLikeLoading({required this.result});
@@ -39,14 +47,22 @@ class FeedUploadRequested extends FeedState implements HasFeedList {
 class FeedFetchSuccess extends FeedState implements HasFeedList {
   @override
   List<Feed> result;
+  bool isFromCache;
 
-  FeedFetchSuccess({required this.result});
+  FeedFetchSuccess({required this.result, this.isFromCache = false});
 }
 
 class FeedDetailFetchSuccess extends FeedState {
   Feed result;
 
   FeedDetailFetchSuccess({required this.result});
+}
+
+class FeedDetailWithInitial extends FeedState {
+  Feed result;
+  bool isRefreshing;
+
+  FeedDetailWithInitial({required this.result, this.isRefreshing = false});
 }
 
 class FeedFailure extends FeedState {

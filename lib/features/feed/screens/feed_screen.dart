@@ -29,7 +29,7 @@ class FeedScreen extends StatelessWidget {
         if (state is FeedUploadRequested) {
           var result = await context.push("/upload");
           await Future.delayed(const Duration(seconds: 2));
-          context.read<FeedBloc>().add(FeedFetch());
+          context.read<FeedBloc>().add(FeedRefresh());
         } else if (state is FeedFailure) {
           // TODO: Show error dialog
         }
@@ -54,34 +54,11 @@ class FeedScreen extends StatelessWidget {
                 child: SmartRefresher(
                   controller: _refreshController,
                   onRefresh: () {
-                    context.read<FeedBloc>().add(FeedFetch());
+                    context.read<FeedBloc>().add(FeedRefresh());
                     _refreshController.refreshCompleted();
                   },
                   header: AppRefreshHeader(),
-                  child:
-                      state is FeedLoading
-                          ? Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                CircularProgressIndicator(
-                                  color: AppColors.brandColor,
-                                  strokeWidth: 2,
-                                ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  '피드를 불러오는 중입니다',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: AppColors.textColor,
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily: 'BMEULJIROTTF',
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                          : _buildFeedContent(context, state),
+                  child: _buildFeedContent(context, state),
                 ),
               ),
               // if (!kIsWeb) ...[
@@ -95,9 +72,109 @@ class FeedScreen extends StatelessWidget {
   }
 
   Widget _buildFeedContent(BuildContext context, FeedState state) {
-    final List<Feed> feeds =
-        state is HasFeedList ? (state as HasFeedList).result.cast<Feed>() : [];
+    if (state is FeedLoading) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(
+              color: AppColors.brandColor,
+              strokeWidth: 2,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              '피드를 불러오는 중입니다',
+              style: TextStyle(
+                fontSize: 16,
+                color: AppColors.textColor,
+                fontWeight: FontWeight.w500,
+                fontFamily: 'BMEULJIROTTF',
+              ),
+            ),
+          ],
+        ),
+      );
+    }
 
+    if (state is FeedCacheLoading) {
+      return Column(
+        children: [
+          // 캐시된 데이터 표시
+          Expanded(child: _buildFeedList(context, state.result)),
+          // 백그라운드 로딩 표시
+          Container(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(
+                    color: AppColors.brandColor,
+                    strokeWidth: 2,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  '최신 피드를 가져오는 중...',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: AppColors.textColor,
+                    fontWeight: FontWeight.w400,
+                    fontFamily: 'BMEULJIROTTF',
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
+
+    if (state is FeedFetchSuccess) {
+      return _buildFeedList(context, state.result);
+    }
+
+    if (state is FeedFailure) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline,
+              size: 48,
+              color: AppColors.textColor.withOpacity(0.5),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              '피드를 불러오는데 실패했습니다',
+              style: TextStyle(
+                fontSize: 16,
+                color: AppColors.textColor,
+                fontWeight: FontWeight.w500,
+                fontFamily: 'BMEULJIROTTF',
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              '다시 시도해주세요',
+              style: TextStyle(
+                fontSize: 14,
+                color: AppColors.textColor.withOpacity(0.7),
+                fontWeight: FontWeight.w400,
+                fontFamily: 'BMEULJIROTTF',
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return NoDataMascote();
+  }
+
+  Widget _buildFeedList(BuildContext context, List<Feed> feeds) {
     if (feeds.isEmpty) {
       return NoDataMascote();
     }
@@ -124,7 +201,7 @@ class FeedScreen extends StatelessWidget {
             feeds,
             onTap: (item) async {
               logger.d("/detail/${item.id}");
-              await context.push("/detail/${item.id}");
+              await context.push("/detail/${item.id}", extra: item);
             },
           ),
         ),

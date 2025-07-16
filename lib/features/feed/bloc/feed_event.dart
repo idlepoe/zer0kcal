@@ -1,4 +1,5 @@
 import '../models/comment.dart';
+import '../models/feed.dart';
 
 abstract class FeedEvent {}
 
@@ -6,9 +7,19 @@ class FeedInitEvent extends FeedEvent {}
 
 class FeedFetch extends FeedEvent {}
 
+class FeedFetchFromCache extends FeedEvent {}
+
+class FeedRefresh extends FeedEvent {}
+
 class FeedDetailFetch extends FeedEvent {
   final String feedID;
   FeedDetailFetch({required this.feedID});
+}
+
+class FeedDetailFetchWithInitial extends FeedEvent {
+  final String feedID;
+  final Feed initialData;
+  FeedDetailFetchWithInitial({required this.feedID, required this.initialData});
 }
 
 class FeedLikePressed extends FeedEvent {

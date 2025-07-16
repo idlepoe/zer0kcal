@@ -12,6 +12,7 @@ import '../core/dio_interceptor.dart';
 import '../core/logger.dart';
 import '../data_provider/firestore_provider.dart';
 import '../features/feed/bloc/feed_detail_bloc.dart';
+import '../features/feed/models/feed.dart';
 import '../features/feed/screens/feed_detail_screen.dart';
 import '../features/feed/screens/feed_screen.dart';
 import '../features/result/bloc/result_bloc.dart';
@@ -42,13 +43,15 @@ class AppRouter {
         builder: (context, state) {
           logger.d(state);
           final id = state.pathParameters['id']!;
+          final initialData = state.extra as Feed?; // extra에서 Feed 데이터 추출
+
           return BlocProvider(
             key: UniqueKey(),
             create:
                 (context) => FeedDetailBloc(
                   FeedRepositoryImpl(FirestoreProvider(), AiProvider()),
                 ),
-            child: FeedDetailScreen(id: id),
+            child: FeedDetailScreen(id: id, initialData: initialData),
           );
         },
       ),

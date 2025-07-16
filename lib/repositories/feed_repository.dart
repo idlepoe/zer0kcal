@@ -19,4 +19,9 @@ abstract class FeedRepository {
 
   Future<bool> countUpLike({required String feedID});
 
+  // 캐시 관련 메서드들
+  Future<List<Feed>> getFeedListFromCache();
+  Future<void> saveFeedListToCache(List<Feed> feeds);
+  Future<void> clearFeedCache();
+  Future<bool> hasCachedFeedList();
 }
